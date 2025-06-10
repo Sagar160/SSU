@@ -5,6 +5,7 @@ from skimage import measure
 import ipywidgets
 
 
+# Count the number of trainable parameters in a model
 def count_parameters(model, print_result=True):
     num = sum(p.numel() for p in model.parameters() if p.requires_grad)
     if print_result:
@@ -15,6 +16,8 @@ def count_parameters(model, print_result=True):
         return
     return num
 
+
+# Create a mesh grid for 3D coordinates
 def mesh_grid(grid_size: int, normalize=False):
     """create mesh grid with default indexing"""
     xx, yy, zz = np.mgrid[:grid_size, :grid_size, :grid_size]
@@ -23,6 +26,8 @@ def mesh_grid(grid_size: int, normalize=False):
         return 2 * (grid_3d / (grid_size - 1)) - 1
     return grid_3d
 
+
+# Normalize vertices to fit in a half unit ball
 def NDCnormalize(vertices, return_scale=False):
     """normalization in half unit ball"""
     vM = vertices.max(0)
@@ -35,6 +40,7 @@ def NDCnormalize(vertices, return_scale=False):
     return nverts
 
 
+# Plotting function for 3D slices
 def plotSlice(sdf_array, vmax):
     def helper(xhi, slice, vmax,  cmap='seismic'):
         plt.imshow(xhi[slice], origin='lower',
@@ -43,6 +49,8 @@ def plotSlice(sdf_array, vmax):
         min=0, max=sdf_array.shape[0]-1, step=1, value=sdf_array.shape[0]//2)
     return ipywidgets.interact(lambda s: helper(sdf_array, s, vmax), s=slider)
 
+
+# Marching cubes algorithm to extract mesh from 3D voxel grid
 def marching_cubes(vox: np.ndarray, iso=0.0, ret=False):
     """marching cube from NxNxN array"""
     im_res = vox.shape[0]
@@ -55,6 +63,8 @@ def marching_cubes(vox: np.ndarray, iso=0.0, ret=False):
         vox_f[:, 0], vox_f[:, 1] = nf[:, 1], nf[:, 0]
     return vox_v.astype(np.float64), vox_f
 
+
+# Export mesh to .obj file
 def export_obj(nv: np.ndarray, nf: np.ndarray, name: str, export_lines=False):
     try:
         file = open(name, "x")
@@ -67,3 +77,13 @@ def export_obj(nv: np.ndarray, nf: np.ndarray, name: str, export_lines=False):
         header = "l " if export_lines else "f "
         file.write(header + " ".join([str(fi + 1) for fi in face]) + "\n")
     file.write("\n")
+
+
+# Create a mask for close points in a signed distance field
+def make_mask_close(sdf_input, grid_n):
+    # dense grid--> sparse grid
+
+    #chnage to 5/grid_n for larger grid
+    # mask = np.abs(sdf_input) < (1/grid_n*np.sqrt(3))
+    mask = np.abs(sdf_input) < (3/grid_n)
+    return mask
