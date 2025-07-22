@@ -1,0 +1,114 @@
+logging: True
+
+reproducibility:
+  is_reproducible: &is_reproducible True
+  seed: &seed 42
+
+# dataset location: /data/workspaces/spanwar/datasets/ssu
+data:
+  # general
+  input_dir: '/data/workspaces/spanwar/dataset/preprocessing_nmc_data/data_preprocessing/get_groundtruth_NMC/gt'
+  data_description: &data_description 'Generated SDF of 32, 64, 128 data using NMC logic'
+  data_name: &data_name 'V1_Manual_Extracted_NMC_Data'
+  data_split: 
+    train: &train_size 0.6
+    val: &val_size 0.2
+    test: &test_size 0.2
+  
+  # dataset
+  mask_threshold: &mask_threshold 33
+  is_crop:
+    train: &train_is_crop True
+    val: &val_is_crop False
+    test: &test_is_crop False
+  crop_size: &crop_size 16
+  crop_threshold: &crop_threshold 400
+  n_jobs: &n_jobs -1
+  
+  # dataset loader
+  batch_size: &batch_size 32
+  shuffle: 
+    train: &train_shuffle True
+    val: &val_shuffle False
+    test: &test_shuffle False
+  num_workers: &num_workers 0
+
+# save location: /data/workspaces/spanwar/results/ssu
+training:
+  save_model_dir: '/data/workspaces/spanwar/results/ssu/save_models'
+  model_name: &model_name '33_Simple_CNN_Upsampler_Manual_NMC_data_l1'
+  lr: &lr 0.001
+  epochs: &epochs 40
+  loss_function: &loss_function 'l1_loss'
+  optimizer: &optimizer 'Adam'
+  # loss wieghts [32->64, 64->128, 32->128]
+  loss_weights: &loss_weights [0.35, 0.0, 6.5]
+  save_model: True
+  # save_predictions: True
+
+  # embedding and channels
+  positional_encoding: &positional_encoding 10
+  in_channels: &in_channels 1 
+  out_channels: &out_channels 1
+
+eval:
+  only_eval: &only_eval False
+  run_eval: &run_eval True
+  eval_dir: '/data/workspaces/spanwar/dataset/preprocessing_nmc_data/abc_dataset_objs'
+  save_predictions_dir: '/data/workspaces/spanwar/results/ssu/test_predictions'
+  data_name: &eval_data_name 'ABC'
+  normalize: &eval_normalize 'NDC Normalization'
+  upsampling_level: &upsampling_level 2
+  eval_job: &eval_job 40
+
+wandb:
+  project_name: 'SSU'
+  entity: 'sp_kumar'
+  name: *model_name
+  group: 'Unet Upsampler + Transposed'
+  tags:
+    - '32 -> 64 -> 128'
+    - 'Unet+Transposed'
+    - 'crop'
+    - *upsampling_level 
+    - *data_name
+  notes: null
+  config:
+    discription: 'Chnage from last time: Add tanh in the end of the model.'
+    
+    # config file
+    config_file_name:  null
+
+    # input data
+    model_name: *model_name
+    data_name: *data_name
+    data_size: null
+    dataset_split:
+      train: *train_size
+      val: *val_size
+      test: *test_size
+    data_description: *data_description
+    mask_threshold: *mask_threshold
+    is_crop:
+      train: *train_is_crop 
+      val: *val_is_crop 
+      test: *test_is_crop 
+    crop_size: *crop_size 
+    crop_threshold: *crop_threshold 
+    batch_size: *batch_size
+    
+    # model
+    learning_rate: *lr
+    epochs: *epochs
+    loss_function: *loss_function
+    loss_weights: *loss_weights
+    optimizer: *optimizer
+    model_parameters: null
+    positional_encoding: *positional_encoding
+    
+    # eval
+    eval_run: *run_eval
+    eval_data_name: *eval_data_name
+    eval_normalize: *eval_normalize
+    upsampling_level: *upsampling_level
+

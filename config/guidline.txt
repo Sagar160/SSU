@@ -1,0 +1,8 @@
+Rules:
+    - Please create unique config file including timestamp. 
+    - If multiple config files same days use other identifier.
+    - Mention your user name.
+    - Model name should start with number like 23.
+    - This number repersent the experiemnt number.
+    - Check the wandb to know which experiment is running.
+    - Please write the description of experiemnt. 

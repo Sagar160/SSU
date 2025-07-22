@@ -1,4 +1,6 @@
 """Various mesh utilities"""
+import fvdb
+import fvdb.nn as fvnn
 import numpy as np
 import matplotlib.pyplot as plt
 from skimage import measure

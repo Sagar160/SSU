@@ -1,0 +1,49 @@
+_wandb:
+    value:
+        cli_version: 0.20.1
+        m: []
+        python_version: 3.11.12
+        t:
+            "1":
+                - 1
+                - 53
+            "2":
+                - 1
+                - 53
+            "3":
+                - 13
+                - 16
+                - 55
+            "4": 3.11.12
+            "5": 0.20.1
+            "12": 0.20.1
+            "13": linux-x86_64
+Discpription:
+    value: Implementing Unet model and FM, train on PONQ Dataset. Improved sampling method, selection of t.
+batch_size:
+    value: 1
+dataset:
+    value: PONQ Dataset
+dataset_size:
+    value: 90
+dataset_split:
+    value:
+        test: 30
+        train: 90
+        val: 30
+device:
+    value: cuda
+epochs:
+    value: 10
+learning_rate:
+    value: 0.001
+loss_function:
+    value: MSE loss
+model:
+    value: Unet
+model_parameters:
+    value: 21743649
+optimizer:
+    value: Adam
+positional_encoding_dim:
+    value: 10

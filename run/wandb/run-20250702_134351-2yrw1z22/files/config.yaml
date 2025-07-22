@@ -1,0 +1,31 @@
+_wandb:
+    value:
+        cli_version: 0.20.1
+        m: []
+        python_version: 3.11.12
+        t:
+            "1":
+                - 1
+                - 5
+                - 53
+            "2":
+                - 1
+                - 5
+                - 53
+            "3":
+                - 2
+                - 13
+                - 16
+                - 55
+            "4": 3.11.12
+            "5": 0.20.1
+            "12": 0.20.1
+            "13": linux-x86_64
+GT_dataset:
+    value: ABC
+Normalization:
+    value: NDC
+Prediction:
+    value: 64 SDF from 32 SDF PONQ test dataset
+eval_mothed:
+    value: PONQ eval

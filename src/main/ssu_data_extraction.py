@@ -1,6 +1,7 @@
 import sys
 sys.path.append('../utils')
 import os
+import io
 import igl
 import h5py
 import trimesh
@@ -11,7 +12,7 @@ data_dir = '/data/workspaces/spanwar/dataset/abc_dataset'
 processed_dir = '/data/workspaces/spanwar/dataset/ssu_data/ssu_processed_data'
 
 
-def mesh_to_sdf(path, resolutions=[32, 64], save_dir=None):
+def mesh_to_sdf(path, resolutions=[32, 64, 128, 256], save_dir=None):
     # extract file name
     sdf_file_name = os.path.basename(os.path.dirname(path))
 
@@ -25,16 +26,30 @@ def mesh_to_sdf(path, resolutions=[32, 64], save_dir=None):
     print(f'Saving SDF to path: {sdf_path}')
 
     # check if the file already exists
+    new_resolutions = []
+    
     if os.path.exists(sdf_path):
-        print(f'SDF file {sdf_path} already exists. Skipping...')
+        with h5py.File(sdf_path, 'r') as f:
+            existing_keys = set(f.keys())
+    
+    for res in resolutions:
+        if os.path.exists(sdf_path) and f'{res}_sdf' in existing_keys:
+            print(f'SDF for resolution {res} already exists in {sdf_path}. Skipping...')
+        else:
+            new_resolutions.append(res)
+            print(f'Processing SDF for resolution {resolutions}...')
+    
+    if len(new_resolutions) == 0:
+        print(f"All resolutions already processed. Exiting...")
         return
-
+    
     # load mesh
     v, f = igl.read_triangle_mesh(path)
     # normalize object inisde unit cube [-0.5 to 0.5] and multiply by 2 to fit [-1 to 1]
     v = 2*mt.NDCnormalize(v)
     
-    for res in resolutions:
+    for res in new_resolutions:
+        
         # create the grid
         points = mt.mesh_grid(res, True)
         
