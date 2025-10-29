@@ -1,0 +1,96 @@
+_wandb:
+    value:
+        cli_version: 0.20.1
+        m: []
+        python_version: 3.11.12
+        t:
+            "1":
+                - 1
+                - 5
+                - 53
+            "2":
+                - 1
+                - 5
+                - 53
+            "3":
+                - 2
+                - 13
+                - 15
+                - 16
+                - 55
+            "4": 3.11.12
+            "5": 0.20.1
+            "12": 0.20.1
+            "13": linux-x86_64
+batch_size:
+    value: 16
+config_file_name:
+    value: config_66_21102025_1200.yaml
+crop_size:
+    value:
+        - 1
+        - 0.5
+        - 0.25
+crop_threshold:
+    value:
+        "32":
+            "0.5": 800
+            "0.25": 400
+            "1": 1600
+        "64":
+            "0.5": 2800
+            "0.25": 1400
+            "1": 5600
+data_description:
+    value: Generated SDF of 32, 64, 128, 256 data using NMC logic
+data_name:
+    value: V1_Manual_Extracted_NMC_Data_large
+data_size:
+    value: 5351
+dataset_grids:
+    value:
+        - 32
+        - 64
+        - 128
+dataset_split:
+    value:
+        test: 0.2
+        train: 0.6
+        val: 0.2
+discription:
+    value: 'Change: rerun 64 without positional encoding'
+epochs:
+    value: 100
+eval_data_name:
+    value: ABC
+eval_discription:
+    value:
+        "32": 32 -> 128
+        "64": 64 -> 128
+eval_normalize:
+    value: NDC Normalization
+eval_run:
+    value: true
+is_crop:
+    value:
+        test: false
+        train: false
+        val: false
+learning_rate:
+    value: 0.001
+loss_function:
+    value: mse_loss
+mask_threshold:
+    value:
+        "32": 65
+        "64": 129
+model_name:
+    value: 66_test
+model_parameters:
+    value: 5609057
+optimizer:
+    value: SGD
+sdf_scaling_value:
+    value:
+        "32": 321
+        "64": 641

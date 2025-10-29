@@ -61,3 +61,20 @@ class LossFunctions:
 
         # Combine both losses
         return l2 + sign_weight * sign_loss
+    
+    @staticmethod
+    def custom_loss(prediction, target, cost=None, is_val=False):
+        if is_val:
+            return F.mse_loss(prediction, target)
+        
+        # MSE Loss
+        mse_loss = F.mse_loss(prediction, target)
+        eps = 1e-6
+        
+        # SMAPE Loss
+        denom = (prediction.abs() + target.abs()).clamp_min(eps)
+        smape_sq = (2.0 * (prediction - target).abs() / denom)
+
+        l_pct = ((smape_sq)**2).mean()
+
+        return mse_loss + 0.2*l_pct

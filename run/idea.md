@@ -15,6 +15,19 @@ implemented Done:
 
 learning
     1. lower batch give the lower validation loss ✅
+    2. Directly upsample 32 to 128 improvement ✅
+    3. chnaging the embedding imporvement ✅--- Need to check further maybe not even needed.
+
+Suggestion:
+1. change the normalizing technique in evaluation
+2. Imporve the FM sampling technique use eular midpoint.
+3. fvdb_marching cube is have some artifacts on lower resolution.
+
+Nissim Suggestion:
+1 compute mc mesh 
+2 for each vertex of the mc mesh compute signed distance to gt mesh with igl for instance 
+3 plot histogram of the sdf 4 display the mesh with a color assigned to each vertex based on its sdf
+
 
 
 

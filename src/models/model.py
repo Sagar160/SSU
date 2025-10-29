@@ -45,6 +45,185 @@ class CNN_vanilla(nn.Module):
         enc = self.encoder(x)
         x = self.t_conv(enc, out_grid=out_grid) 
         return self.decoder(x)
+    
+import torch
+import torch.nn as nn
+import fvdb
+import fvdb.nn as fvnn
+from fvdb.nn import VDBTensor
+import torch.nn.functional as F
+import math
+
+import torch
+import torch.nn as nn
+import fvdb
+import fvdb.nn as fvnn
+from fvdb.nn import VDBTensor
+import torch.nn.functional as F
+import math
+
+class CrossAttentionBlock(nn.Module):
+    def __init__(
+        self,
+        channels,
+        condition_channels,
+        num_heads=8,
+        num_head_channels=8,
+    ):
+        super().__init__()
+        self.channels = channels
+        self.condition_channels = condition_channels
+        
+        assert channels % num_head_channels == 0, f"Q channels {channels} not divisible by num_head_channels {num_head_channels}"
+        self.num_heads = channels // num_head_channels
+        self.head_dim = num_head_channels
+        
+        self.norm_query = fvnn.GroupNorm(min(4, channels), channels)
+        self.norm_kv = fvnn.GroupNorm(1, condition_channels)
+        
+        self.q_proj = fvnn.Linear(channels, self.num_heads * self.head_dim)
+        
+        # Split KV projections to avoid chunking issues
+        self.k_proj = fvnn.Linear(condition_channels, self.num_heads * self.head_dim)
+        self.v_proj = fvnn.Linear(condition_channels, self.num_heads * self.head_dim)
+        
+        self.proj_out = fvnn.Linear(self.num_heads * self.head_dim, channels)
+
+    def _attention(self, q: torch.Tensor, k: torch.Tensor, v: torch.Tensor):
+        length_q, ch_q = q.shape
+        length_kv, ch_kv = k.shape
+
+        assert ch_q == self.num_heads * self.head_dim, "Query dim mismatch"
+        assert ch_kv == self.num_heads * self.head_dim, "Key/Value dim mismatch"
+
+        q = q.reshape(length_q, self.num_heads, self.head_dim)
+        k = k.reshape(length_kv, self.num_heads, self.head_dim)
+        v = v.reshape(length_kv, self.num_heads, self.head_dim)
+        
+        scores = torch.einsum("qhd,khd->qhk", q, k) / math.sqrt(self.head_dim)
+        attention_weights = F.softmax(scores, dim=-1)
+        values = torch.einsum("qhk,khd->qhd", attention_weights, v)
+
+        values = values.reshape(length_q, -1)
+        return values
+        
+    def attention(self, q: VDBTensor, k: VDBTensor, v: VDBTensor):
+        values = []
+        for batch_idx in range(q.grid.grid_count):
+            q_batch = q.data[batch_idx].jdata
+            k_batch = k.data[batch_idx].jdata
+            v_batch = v.data[batch_idx].jdata
+            values.append(self._attention(q_batch, k_batch, v_batch))
+            
+        return fvdb.JaggedTensor(values)
+
+    def forward(self, x: VDBTensor, cond: VDBTensor):
+        # 1. Project main input for queries
+        q = self.q_proj(self.norm_query(x))
+        
+        # 2. Project conditional input for keys and values separately
+        k = self.k_proj(self.norm_kv(cond))
+        v = self.v_proj(self.norm_kv(cond))
+        
+        # 3. Perform cross-attention
+        attended_features = self.attention(q, k, v)
+        
+        # 4. Project output and add residual
+        attended_features_vdb = VDBTensor(x.grid, attended_features)
+        feature = self.proj_out(attended_features_vdb)
+        return feature + x
+    
+# --------------------------------------------------------------------------------------------------------------------------
+
+class CNN_vanilla_without_transpose(nn.Module):
+    def __init__(self, in_channels=2, features=32, out_channels=1, dropout=0.05):
+        super(CNN_vanilla_without_transpose, self).__init__()
+
+        self.activation = fvnn.SiLU(inplace=True)
+        
+        self.attention_block = CrossAttentionBlock(channels=features, condition_channels=1) 
+        
+        self.encoder = nn.Sequential(
+            fvnn.SparseConv3d(in_channels, features, kernel_size=3, stride=1),
+            fvnn.Dropout(dropout),
+            self.activation,
+            fvnn.SparseConv3d(features, features, kernel_size=3, stride=1),
+            fvnn.Dropout(dropout),
+            self.activation,
+            fvnn.SparseConv3d(features, features, kernel_size=3, stride=1),
+            fvnn.Dropout(dropout),
+            self.activation,
+            fvnn.SparseConv3d(features, features, kernel_size=3, stride=1),
+            fvnn.Dropout(dropout),
+            self.activation,
+            fvnn.SparseConv3d(features, features, kernel_size=3, stride=1),
+            fvnn.Dropout(dropout),
+            self.activation
+        )
+        
+        self.decoder = nn.Sequential(
+            fvnn.Dropout(dropout),
+            self.activation,
+            fvnn.SparseConv3d(features, features, kernel_size=3, stride=1),
+            fvnn.Dropout(dropout),
+            self.activation,
+            fvnn.SparseConv3d(features, features, kernel_size=3, stride=1),
+            fvnn.Dropout(dropout),
+            self.activation,
+            fvnn.SparseConv3d(features, out_channels, kernel_size=3, stride=1)
+        )
+
+        self.t_conv = fvnn.SparseConv3d(features, features, kernel_size=3, stride=2, transposed=True)
+
+    def forward(self, x: VDBTensor, cond: VDBTensor):
+        enc = self.encoder(x)
+        attended_enc = self.attention_block(enc, cond)
+        return self.decoder(attended_enc)
+
+# class CNN_vanilla_without_transpose(nn.Module):
+#     def __init__(self, in_channels=3, features=32, out_channels=1, dropout=0.05):
+#         super(CNN_vanilla_without_transpose, self).__init__()
+
+#         self.activation = fvnn.SiLU(inplace=True)
+#         self.encoder = nn.Sequential(
+#             fvnn.SparseConv3d(in_channels, features, kernel_size=3, stride=1),
+#             fvnn.Dropout(dropout),
+#             self.activation,
+#             fvnn.SparseConv3d(features, features, kernel_size=3, stride=1),
+#             fvnn.Dropout(dropout),
+#             self.activation,
+#             fvnn.SparseConv3d(features, features, kernel_size=3, stride=1),
+#             fvnn.Dropout(dropout),
+#             self.activation,
+#             fvnn.SparseConv3d(features, features, kernel_size=3, stride=1),
+#             fvnn.Dropout(dropout),
+#             self.activation,
+
+#             fvnn.SparseConv3d(features, features, kernel_size=3, stride=1),
+#             fvnn.Dropout(dropout),
+#             self.activation
+#         )
+        
+#         self.decoder = nn.Sequential(
+#             fvnn.Dropout(dropout),
+#             self.activation,
+#             fvnn.SparseConv3d(features, features, kernel_size=3, stride=1),
+#             fvnn.Dropout(dropout),
+#             self.activation,
+#             fvnn.SparseConv3d(features, features, kernel_size=3, stride=1),
+#             fvnn.Dropout(dropout),
+#             self.activation,
+#             fvnn.SparseConv3d(features, out_channels, kernel_size=3, stride=1)
+#         )
+
+#         self.t_conv = fvnn.SparseConv3d(
+#             features, features, kernel_size=3, stride=2, transposed=True) #TODO check that this is correct
+
+#     def forward(self, x):
+#         enc = self.encoder(x)
+#         # x = self.t_conv(enc, out_grid=out_grid)
+#         # input_sdf = fvnn.VDBTensor(x.grid, x.grid.jagged_like(x.jdata[:, 0].unsqueeze(-1)))
+#         return self.decoder(enc)
 
 
 class CNN_vanilla_with_residual(nn.Module):

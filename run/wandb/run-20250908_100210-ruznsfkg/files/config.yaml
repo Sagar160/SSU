@@ -1,0 +1,70 @@
+_wandb:
+    value:
+        cli_version: 0.20.1
+        m: []
+        python_version: 3.11.12
+        t:
+            "1":
+                - 1
+                - 5
+                - 53
+            "2":
+                - 1
+                - 5
+                - 53
+            "3":
+                - 13
+                - 15
+                - 16
+                - 55
+            "4": 3.11.12
+            "5": 0.20.1
+            "12": 0.20.1
+            "13": linux-x86_64
+batch_size:
+    value: 16
+config_file_name:
+    value: config_53_08102025_1100.yaml
+data_description:
+    value: Generated SDF of 32, 64, 128, 256 data using NMC logic
+data_name:
+    value: V1_Manual_Extracted_NMC_Data_large
+data_size:
+    value: 5351
+dataset_grids:
+    value:
+        - 32
+        - 128
+dataset_split:
+    value:
+        test: 0.2
+        train: 0.6
+        val: 0.2
+discription:
+    value: 'Change: rerun 49 with l1 loss, epoch 100'
+epochs:
+    value: 100
+eval_data_name:
+    value: ABC
+eval_discription:
+    value: 32 -> 128
+eval_normalize:
+    value: NDC Normalization
+eval_run:
+    value: true
+input_size:
+    value: 33
+learning_rate:
+    value: 0.001
+loss_function:
+    value: l1_loss
+mask_threshold:
+    value: 65
+model_name:
+    value: 53_rerun_49_with_l1_loss_epoch_100
+model_parameters:
+    value: 21715649
+optimizer:
+    value: Adam
+upsample_factor:
+    value: 4

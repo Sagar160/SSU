@@ -75,9 +75,10 @@ class WandbLogger:
         if self.logging:
             wandb.finish()
         else:
+            print("Wandb logging is disabled. No logs to finish.")
             # save locally the saved logs
-            print("Wandb logging is disabled. Saving logs locally.")
-            file_name = self.config['config_file_name'].replace('.yaml', '')
-            with open(f'wandb_logs_saved_locally/{file_name}.txt', 'w') as f:
-                for log in self.save_logs:
-                    f.write(str(log) + '\n')
+            # print("Wandb logging is disabled. Saving logs locally.")
+            # file_name = self.config['config_file_name'].replace('.yaml', '')
+            # with open(f'wandb_logs_saved_locally/{file_name}.txt', 'w') as f:
+            #     for log in self.save_logs:
+            #         f.write(str(log) + '\n')

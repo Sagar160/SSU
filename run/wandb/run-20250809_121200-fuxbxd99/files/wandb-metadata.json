@@ -1,0 +1,47 @@
+{
+  "os": "Linux-6.9.5-200.fc40.x86_64-x86_64-with-glibc2.39",
+  "python": "CPython 3.11.12",
+  "startedAt": "2025-08-09T10:12:01.193685Z",
+  "args": [
+    "--config",
+    "config_48_09082025_1100.yaml"
+  ],
+  "program": "/run/netsop/u/home-sam/home/spanwar/Documents/learn-fvdb/ssu/SSU/run/main.py",
+  "codePath": "run/main.py",
+  "git": {
+    "remote": "https://github.com/nissmar/SSU.git",
+    "commit": "8ca33a3036576c8cabc9710f78157d79fb50decc"
+  },
+  "email": "sagarpanwar249@gmail.com",
+  "root": "/run/netsop/u/home-sam/home/spanwar/Documents/learn-fvdb/ssu/SSU/run",
+  "host": "gin",
+  "executable": "/user/spanwar/home/.conda/envs/fvdb_ponq/bin/python",
+  "codePathLocal": "main.py",
+  "cpu_count": 52,
+  "cpu_count_logical": 104,
+  "gpu": "NVIDIA RTX A6000",
+  "gpu_count": 1,
+  "disk": {
+    "/": {
+      "total": "4086965469184",
+      "used": "989039284224"
+    }
+  },
+  "memory": {
+    "total": "540631392256"
+  },
+  "cpu": {
+    "count": 52,
+    "countLogical": 104
+  },
+  "gpu_nvidia": [
+    {
+      "name": "NVIDIA RTX A6000",
+      "memoryTotal": "51527024640",
+      "cudaCores": 10752,
+      "architecture": "Ampere",
+      "uuid": "GPU-41fbf3d5-52dd-f26d-7c73-403bdc2d7482"
+    }
+  ],
+  "cudaVersion": "12.4"
+}

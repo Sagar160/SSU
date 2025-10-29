@@ -2,7 +2,8 @@ import fvdb
 import fvdb.nn as fvnn
 from fvdb.nn import VDBTensor
 import torch
-
+import torch.nn as nn
+    
 
 class BasicBlock(torch.nn.Module):
     expansion = 1
@@ -38,6 +39,7 @@ class BasicBlock(torch.nn.Module):
 class FVDBUNetBase(torch.nn.Module):
     LAYERS = (2, 2, 2, 2, 2, 2, 2, 2)
     CHANNELS = (32, 64, 128, 256, 256, 128, 96, 96)
+    # CHANNELS = (32, 64, 64, 128, 128, 64, 32, 16)
     INIT_DIM = 32
     OUT_TENSOR_STRIDE = 1
 
@@ -46,6 +48,7 @@ class FVDBUNetBase(torch.nn.Module):
 
         # Output of the first conv concated to conv6
         self.inplanes = self.INIT_DIM
+        #chnage kernel size from 5 to 3
         self.conv0p1s1 = fvnn.SparseConv3d(in_channels, self.inplanes, kernel_size=5, stride=1, bias=False)
         self.bn0 = fvnn.BatchNorm(self.inplanes)
 

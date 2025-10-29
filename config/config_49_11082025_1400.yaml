@@ -1,0 +1,124 @@
+logging: True
+
+reproducibility:
+  is_reproducible: &is_reproducible True
+  seed: &seed 42
+
+# dataset location: /data/workspaces/spanwar/datasets/ssu
+data:
+  # general
+  input_dir: '/data/workspaces/spanwar/dataset/preprocessing_nmc_data/data_preprocessing/get_groundtruth_NMC/gt_large'
+  data_description: &data_description 'Generated SDF of 32, 64, 128, 256 data using NMC logic'
+  data_name: &data_name 'V1_Manual_Extracted_NMC_Data_large'
+  data_split: 
+    train: &train_size 0.6
+    val: &val_size 0.2
+    test: &test_size 0.2
+
+  # dataset
+  dataset_grids: &dataset_grids [32, 128]
+  mask_threshold: &mask_threshold 65
+  upsample_factor: &upsample_factor 4
+  input_size: &input_size 33
+  unique_random_direction: &unique_random_direction True
+  # is_crop:
+  #   train: &train_is_crop True
+  #   val: &val_is_crop False
+  #   test: &test_is_crop False
+  # crops_size: &crops_size [8, 16, 32]
+  # crops_size_probability: &crops_size_probability [0.0, 1.0, 0.0]
+  # crops_threshold: &crops_threshold {8: 25, 16: 200, 32: 1600} # reducing the threshold as mask is 65
+  n_jobs: &n_jobs -1
+  
+  # dataset loader except test, bs is 1
+  batch_size: &batch_size 16 #32 
+  shuffle: 
+    train: &train_shuffle True
+    val: &val_shuffle False
+    test: &test_shuffle False
+  num_workers: &num_workers 0
+
+# save location: /data/workspaces/spanwar/results/ssu
+training:
+  save_model_dir: '/data/workspaces/spanwar/results/ssu/save_models'
+  save_predictions_dir: '/data/workspaces/spanwar/results/ssu/test_predictions'
+  model_name: &model_name '49_random_direction_per_voxel'
+  lr: &lr 0.001
+  epochs: &epochs 100
+  loss_function: &loss_function 'mse_loss'
+  optimizer: &optimizer 'Adam'
+  # loss wieghts [32->64, 64->128, 32->128]
+  # loss_weights: &loss_weights [0.25, 0.25, 0.5]
+  save_model: True
+  # save_predictions: True
+
+  # embedding and channels
+  # positional_encoding: &positional_encoding 10
+  in_channels: &in_channels 1 
+  out_channels: &out_channels 1
+
+eval:
+  only_eval: &only_eval False
+  run_eval: &run_eval True
+  eval_dir: '/data/workspaces/spanwar/dataset/preprocessing_nmc_data/abc_dataset_objs'
+  data_name: &eval_data_name 'ABC'
+  normalize: &eval_normalize 'NDC Normalization'
+  # upsampling_level: &upsampling_level 2 #2
+  eval_job: &eval_job 40 #40
+  eval_discription: &eval_discription '32 -> 128'
+
+wandb:
+  project_name: 'SSU'
+  entity: 'sp_kumar'
+  name: *model_name
+  group: 'FM + Cubic Vector'
+  tags:
+    - 'FM'
+    - 'Cubic Vector' 
+    - *upsample_factor
+    - *data_name
+  notes: null
+  config:
+    discription: 'Change: give different random direction for each voxel in the input grid'
+
+    # config file
+    config_file_name:  null
+
+    # input data
+    model_name: *model_name
+    data_name: *data_name
+    data_size: null
+    dataset_split:
+      train: *train_size
+      val: *val_size
+      test: *test_size
+    dataset_grids: *dataset_grids
+    data_description: *data_description
+    mask_threshold: *mask_threshold
+    upsample_factor: *upsample_factor
+    input_size: *input_size
+    unique_random_direction: *unique_random_direction
+    # is_crop:
+    #   train: *train_is_crop 
+    #   val: *val_is_crop 
+    #   test: *test_is_crop 
+    # crop_size: *crops_size 
+    # crop_threshold: *crops_threshold 
+    # crops_size_probability: *crops_size_probability
+    batch_size: *batch_size
+    
+    # model
+    learning_rate: *lr
+    epochs: *epochs
+    loss_function: *loss_function
+    # loss_weights: *loss_weights
+    optimizer: *optimizer
+    model_parameters: null
+    # positional_encoding: *positional_encoding
+    
+    # eval
+    eval_run: *run_eval
+    eval_data_name: *eval_data_name
+    eval_normalize: *eval_normalize
+    # upsampling_level: *upsampling_level
+    eval_discription: *eval_discription
