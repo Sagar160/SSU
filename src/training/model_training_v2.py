@@ -156,7 +156,7 @@ class ModelTrainer:
                 # xt = self.sample_fm(vdb_inputs, vdb_outputs)
                 # velocity = self.velocity_fm(vdb_inputs, vdb_outputs)
 
-                # wirghted FM
+                # wieghted FM
                 # in_s = vdb_inputs.jdata[:,0]
                 # out_s = vdb_outputs.jdata[:,0]
                 # cost_loss = ((in_s - out_s)**2)        # squared L2 example -> [B]

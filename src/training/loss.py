@@ -63,18 +63,16 @@ class LossFunctions:
         return l2 + sign_weight * sign_loss
     
     @staticmethod
-    def custom_loss(prediction, target, cost=None, is_val=False):
+    def custom_loss(prediction, target, cost=None, is_val=True):
         if is_val:
             return F.mse_loss(prediction, target)
         
         # MSE Loss
         mse_loss = F.mse_loss(prediction, target)
-        eps = 1e-6
+        eps = 0.01
         
-        # SMAPE Loss
-        denom = (prediction.abs() + target.abs()).clamp_min(eps)
-        smape_sq = (2.0 * (prediction - target).abs() / denom)
+        # Vanilla RMSLE
+        diff = torch.log(prediction.abs() + eps) - torch.log(target.abs() + eps)
+        l_pct = torch.mean(diff**2)
 
-        l_pct = ((smape_sq)**2).mean()
-
-        return mse_loss + 0.2*l_pct
+        return l_pct

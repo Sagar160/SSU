@@ -1,0 +1,112 @@
+logging: True
+
+reproducibility:
+  is_reproducible: &is_reproducible True
+  seed: &seed 42
+
+data:
+  # general
+  input_dir: '/data/workspaces/spanwar/dataset/preprocessing_nmc_data/data_preprocessing/get_groundtruth_NMC/gt_large'
+  data_description: &data_description 'Generated SDF of 32, 64, 128, 256 data using NMC logic'
+  data_name: &data_name 'V1_Manual_Extracted_NMC_Data_large'
+  data_split: 
+    train: &train_size 0.6
+    val: &val_size 0.2
+    test: &test_size 0.2
+
+  # dataset
+  dataset_grids: &dataset_grids [32, 64, 128] #[32, 128]
+  mask_threshold: &mask_threshold {32: 65, 64: 129}
+  sdf_scaling_value: &sdf_scaling_value {32: 65, 64: 129}
+  input_size: &input_size {32: 33, 64: 65} #, 128: 129}
+  unique_random_direction: &unique_random_direction True
+  is_crop:
+    train: &train_is_crop False #True
+    val: &val_is_crop False
+    test: &test_is_crop False
+  crops_ratio: &crops_ratio [1, 0.5, 0.25]
+  crops_threshold: &crops_threshold {32: {1: 1600, 0.5: 800, 0.25: 400}, 64: {1: 5600, 0.5: 2800, 0.25: 1400}} # reducing the threshold as mask is 65
+  n_jobs: &n_jobs -1
+  
+  # dataset loader except test, bs is 1
+  batch_size: &batch_size 16 #32 
+  shuffle: 
+    train: &train_shuffle True
+    val: &val_shuffle False
+    test: &test_shuffle False
+  num_workers: &num_workers 0
+
+# save location: /data/workspaces/spanwar/results/ssu
+training:
+  use_pre_train_model: True
+  pre_train_model_name: '66_original_improve_inference'
+  save_model_dir: '/data/workspaces/spanwar/results/ssu/save_models'
+  save_predictions_dir: '/data/workspaces/spanwar/results/ssu/test_predictions'
+  model_name: &model_name '68_fineTune_66_vanilla_rmsle'
+  lr: &lr 0.0003 #0.003
+  epochs: &epochs 50
+  loss_function: &loss_function 'custom_loss'
+  optimizer: &optimizer 'adam'
+  save_model: True
+  is_save_predictions: True
+
+eval:
+  only_eval: &only_eval False
+  run_eval: &run_eval True
+  eval_dir: '/data/workspaces/spanwar/dataset/preprocessing_nmc_data/abc_dataset_objs'
+  data_name: &eval_data_name 'ABC'
+  normalize: &eval_normalize 'NDC Normalization'
+  # upsampling_level: &upsampling_level 2 #2
+  eval_job: &eval_job 40 #40
+  eval_discription: &eval_discription {32: '32 -> 128', 64: '64 -> 128'}
+
+wandb:
+  project_name: 'SSU'
+  entity: 'sp_kumar'
+  name: *model_name
+  group: 'FM + Cubic Vector'
+  tags:
+    - 'FM'
+    - 'Cubic Vector' 
+    - *data_name
+  notes: null
+  config:
+    discription: 'Change: original'
+
+    # config file
+    config_file_name:  null
+
+    # input data
+    model_name: *model_name
+    data_name: *data_name
+    data_size: null
+    dataset_split:
+      train: *train_size
+      val: *val_size
+      test: *test_size
+    dataset_grids: *dataset_grids
+    data_description: *data_description
+    mask_threshold: *mask_threshold
+    sdf_scaling_value: *sdf_scaling_value
+    # random_direction_type: *random_direction_type
+    is_crop:
+      train: *train_is_crop 
+      val: *val_is_crop 
+      test: *test_is_crop 
+    crop_size: *crops_ratio 
+    crop_threshold: *crops_threshold 
+    batch_size: *batch_size
+    
+    # model
+    learning_rate: *lr
+    epochs: *epochs
+    loss_function: *loss_function
+    optimizer: *optimizer
+    model_parameters: null
+    # positional_encoding: *positional_encoding
+    
+    # eval
+    eval_run: *run_eval
+    eval_data_name: *eval_data_name
+    eval_normalize: *eval_normalize
+    eval_discription: *eval_discription
