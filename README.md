@@ -45,11 +45,11 @@ cd ../..
 
 ## Implementation
 
-Please consider this config file: config_68_29102025_1200.yaml 
+Please consider this config file: config_66_21102025_1200.yaml
 ```shell
 conda activate ssu
 cd ssu/run
-python main.py --config config_68_29102025_1200.yaml
+python main.py --config config_66_21102025_1200.yaml
 ```
 Now you can play with the parameters and run different experiements.
 
