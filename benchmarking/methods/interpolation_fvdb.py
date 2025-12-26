@@ -6,7 +6,6 @@ import torch
 import fvdb.nn as fvnn
 import trimesh
 from sklearn.neighbors import KDTree
-from mesh_to_sdf import get_sdf_from_mesh
 
 import sys
 sys.path.append('/user/spanwar/home/Documents/learn-fvdb/ssu/SSU/benchmarking/prediction_utils')
@@ -114,7 +113,7 @@ def run(filenames, input_dir, gt_dir=None, ssu_pred_dir=None):
                 grid_p_size, data_p_size = load_prediction(filename, ssu_pred_dir, size-1, device=device)
                 # trilinear on same grid
                 up_vdb_size = trilinear_upsample(small_vdb, grid_p_size)
-                arr_size = get_sdf_from_mesh(filename.split('.')[0] + '.obj', grid_size=(size-1)*4+1)
+                arr_size = load_3d_array(filename, input_dir, (size-1)*4+1)
                 sdf_comparison[size].append(compare_pred_with_gt_sdf((grid_p_size, data_p_size), up_vdb_size, arr_size, size)) 
             
             v, f,_ = up_vdb.grid.marching_cubes(up_vdb.data, level=0.0)
@@ -143,11 +142,12 @@ def run(filenames, input_dir, gt_dir=None, ssu_pred_dir=None):
     return results, sdf_comparison
 
 def run_parallel(n_jobs=-1):
-    input_dir='/data/workspaces/spanwar/dataset/thingi/thingi_all/gt_Thingi32_NDC_norm'
+    # input_dir='/data/workspaces/spanwar/dataset/thingi/thingi_all/gt_Thingi32_NDC_norm'
+    input_dir='/data/workspaces/spanwar/dataset/thingi/thingi_large_all/gt_thingi_large'
     gt = '/data/workspaces/spanwar/dataset/thingi/GT_thingi'
     ssu_pred_dir = '/data/workspaces/spanwar/results/ssu/test_predictions/77_eval_thingi32'
 
-    with open('/user/spanwar/home/Documents/learn-fvdb/ssu/SSU/benchmarking/thingi30.txt', 'r') as f:
+    with open('/user/spanwar/home/Documents/learn-fvdb/ssu/SSU/run/thingi30.txt', 'r') as f:
         filenames = f.read().splitlines()
     filenames = [f'{name}.hdf5' for name in filenames]
     results, sdf_comparison = run(filenames, input_dir, gt, ssu_pred_dir)
