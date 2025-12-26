@@ -1,1 +1,0 @@
-{"_runtime":10.649537197,"_step":19,"train_loss":0.4746446907520294,"val_loss per ele(32->128)":0.2992068827152252,"_timestamp":1.7615801678420544e+09,"val_loss":0.5984137654304504,"epoch":20,"_wandb":{"runtime":18},"val_loss per ele(64->128)":0}

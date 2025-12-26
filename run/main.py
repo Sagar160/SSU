@@ -16,7 +16,8 @@ from eval import ABC_eval
 from models import unet
 from models import model as simpleModels
 from models import unet as unetModels
-from training import model_training_v2 as model_training
+# from training import model_training_v2 as model_training
+from training import model_training_v4 as model_training
 from logger import wandb_logging
 from data_loader import ABC_dataset_loader
 from utils import fvdb_utils as fu
@@ -113,14 +114,17 @@ def main(config_file):
             in_channels = 1
             out_channels = 1
             vector_dim = 3
-            t_dim = 1
+            t_dim = 0
             extra_dim = 0
             t_pos = 0 #6
             s_pos = 0 #6
             
-            model = unetModels.FVDBUNetBase(
-                in_channels=in_channels + vector_dim + t_dim + t_pos + s_pos + extra_dim,
-                out_channels=out_channels)
+            # model = unetModels.FVDBUNetBase(
+            #     in_channels=in_channels + vector_dim + t_dim + t_pos + s_pos + extra_dim,
+            #     out_channels=out_channels)
+
+            model = simpleModels.CNN_vanilla_without_transpose(in_channels=in_channels + vector_dim + t_dim + t_pos + s_pos + extra_dim, 
+                                                               features=256, out_channels=out_channels)
 
         trainable_params = st.print_model_summary(model)
         logger.update_config('model_parameters', trainable_params)

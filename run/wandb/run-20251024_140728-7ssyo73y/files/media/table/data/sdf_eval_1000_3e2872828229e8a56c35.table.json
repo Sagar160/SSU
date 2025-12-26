@@ -1,1 +1,0 @@
-{"columns": ["object_name", "l1_error_32", "l1_error_64", "mean_squared_error_32", "mean_squared_error_64"], "data": [["00006280.hdf5", 0.11212494969367981, 0.409481942653656, 0.024433119222521782, 0.28236424922943115]]}
