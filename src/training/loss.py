@@ -68,11 +68,7 @@ class LossFunctions:
             return F.mse_loss(prediction, target)
         
         # MSE Loss
-        mse_loss = F.mse_loss(prediction, target)
-        eps = 0.01
-        
-        # Vanilla RMSLE
-        diff = torch.log(prediction.abs() + eps) - torch.log(target.abs() + eps)
-        l_pct = torch.mean(diff**2)
+        # mse_loss = F.mse_loss(prediction, target)
+        loss = LossFunctions.mse_sign_loss(prediction, target)
 
-        return l_pct
+        return loss

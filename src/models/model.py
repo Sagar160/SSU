@@ -135,9 +135,9 @@ class CrossAttentionBlock(nn.Module):
     
 # --------------------------------------------------------------------------------------------------------------------------
 
-class CNN_vanilla_without_transpose(nn.Module):
+class CNN_vanilla_with_attention(nn.Module):
     def __init__(self, in_channels=2, features=32, out_channels=1, dropout=0.05):
-        super(CNN_vanilla_without_transpose, self).__init__()
+        super(CNN_vanilla_with_attention, self).__init__()
 
         self.activation = fvnn.SiLU(inplace=True)
         
@@ -180,50 +180,50 @@ class CNN_vanilla_without_transpose(nn.Module):
         attended_enc = self.attention_block(enc, cond)
         return self.decoder(attended_enc)
 
-# class CNN_vanilla_without_transpose(nn.Module):
-#     def __init__(self, in_channels=3, features=32, out_channels=1, dropout=0.05):
-#         super(CNN_vanilla_without_transpose, self).__init__()
+class CNN_vanilla_without_transpose(nn.Module):
+    def __init__(self, in_channels=3, features=32, out_channels=1, dropout=0.05):
+        super(CNN_vanilla_without_transpose, self).__init__()
 
-#         self.activation = fvnn.SiLU(inplace=True)
-#         self.encoder = nn.Sequential(
-#             fvnn.SparseConv3d(in_channels, features, kernel_size=3, stride=1),
-#             fvnn.Dropout(dropout),
-#             self.activation,
-#             fvnn.SparseConv3d(features, features, kernel_size=3, stride=1),
-#             fvnn.Dropout(dropout),
-#             self.activation,
-#             fvnn.SparseConv3d(features, features, kernel_size=3, stride=1),
-#             fvnn.Dropout(dropout),
-#             self.activation,
-#             fvnn.SparseConv3d(features, features, kernel_size=3, stride=1),
-#             fvnn.Dropout(dropout),
-#             self.activation,
+        self.activation = fvnn.SiLU(inplace=True)
+        self.encoder = nn.Sequential(
+            fvnn.SparseConv3d(in_channels, features, kernel_size=3, stride=1),
+            fvnn.Dropout(dropout),
+            self.activation,
+            fvnn.SparseConv3d(features, features, kernel_size=3, stride=1),
+            fvnn.Dropout(dropout),
+            self.activation,
+            fvnn.SparseConv3d(features, features, kernel_size=3, stride=1),
+            fvnn.Dropout(dropout),
+            self.activation,
+            fvnn.SparseConv3d(features, features, kernel_size=3, stride=1),
+            fvnn.Dropout(dropout),
+            self.activation,
 
-#             fvnn.SparseConv3d(features, features, kernel_size=3, stride=1),
-#             fvnn.Dropout(dropout),
-#             self.activation
-#         )
+            fvnn.SparseConv3d(features, features, kernel_size=3, stride=1),
+            fvnn.Dropout(dropout),
+            self.activation
+        )
         
-#         self.decoder = nn.Sequential(
-#             fvnn.Dropout(dropout),
-#             self.activation,
-#             fvnn.SparseConv3d(features, features, kernel_size=3, stride=1),
-#             fvnn.Dropout(dropout),
-#             self.activation,
-#             fvnn.SparseConv3d(features, features, kernel_size=3, stride=1),
-#             fvnn.Dropout(dropout),
-#             self.activation,
-#             fvnn.SparseConv3d(features, out_channels, kernel_size=3, stride=1)
-#         )
+        self.decoder = nn.Sequential(
+            fvnn.Dropout(dropout),
+            self.activation,
+            fvnn.SparseConv3d(features, features, kernel_size=3, stride=1),
+            fvnn.Dropout(dropout),
+            self.activation,
+            fvnn.SparseConv3d(features, features, kernel_size=3, stride=1),
+            fvnn.Dropout(dropout),
+            self.activation,
+            fvnn.SparseConv3d(features, out_channels, kernel_size=3, stride=1)
+        )
 
-#         self.t_conv = fvnn.SparseConv3d(
-#             features, features, kernel_size=3, stride=2, transposed=True) #TODO check that this is correct
+        self.t_conv = fvnn.SparseConv3d(
+            features, features, kernel_size=3, stride=2, transposed=True) #TODO check that this is correct
 
-#     def forward(self, x):
-#         enc = self.encoder(x)
-#         # x = self.t_conv(enc, out_grid=out_grid)
-#         # input_sdf = fvnn.VDBTensor(x.grid, x.grid.jagged_like(x.jdata[:, 0].unsqueeze(-1)))
-#         return self.decoder(enc)
+    def forward(self, x):
+        enc = self.encoder(x)
+        # x = self.t_conv(enc, out_grid=out_grid)
+        # input_sdf = fvnn.VDBTensor(x.grid, x.grid.jagged_like(x.jdata[:, 0].unsqueeze(-1)))
+        return self.decoder(enc)
 
 
 class CNN_vanilla_with_residual(nn.Module):

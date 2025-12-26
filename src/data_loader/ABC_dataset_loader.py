@@ -26,6 +26,7 @@ class ABCDataset(Dataset):
                  unique_random_direction, 
                  max_tries=100, 
                  is_test=False,
+                 only_prediction=False,
                  n_jobs=-1):
         
         self.input_dir = src_dir
@@ -43,6 +44,7 @@ class ABCDataset(Dataset):
 
         self.max_tries = max_tries
         self.is_test = is_test
+        self.only_prediction = only_prediction
         self.n_jobs = n_jobs
 
         # helping class
@@ -76,8 +78,8 @@ class ABCDataset(Dataset):
         
         with h5py.File(path, 'r') as f:
             # check if the file has the required datasets
-            if '32_sdf' not in f or '64_sdf' not in f or '128_sdf' not in f:
-                raise ValueError(f"File {path} does not contain required datasets.")
+            # if '32_sdf' not in f or '64_sdf' not in f or '128_sdf' not in f:
+            #     raise ValueError(f"File {path} does not contain required datasets.")
             
             # fetch the SDF and output SDF
             sdf_dict['obj_name'] = obj_name
@@ -215,7 +217,10 @@ class ABCDataset(Dataset):
             vdb_set.append(vdb_tensors)
             vdb_set.append(new_ijkss)
             vdb_set.append(new_featuress)
-            vdb_set.append(_dict[129]) # scale during testing
+            if not self.only_prediction:
+                vdb_set.append(_dict[129]) # scale during testing
+            else:
+                vdb_set.append(None)
             return tuple(vdb_set)
 
     def __len__(self):
@@ -272,9 +277,10 @@ class ABCDataLoader():
                              test_dataset, 
                              batch_size=1, 
                              shuffle=None, 
-                             num_workers=0):
+                             num_workers=0,
+                             is_eval=False):
         
-        is_eval = False  # This can be set based on your evaluation mode
+        # is_eval = False  # This can be set based on your evaluation mode
         if not is_eval:
             train_dataloader =  torch.utils.data.DataLoader(train_dataset, 
                                                 collate_fn=self.custom_collate_fn,
@@ -327,10 +333,42 @@ class ABCDataLoader():
         return train_set, val_set, test_set
 
     
-    def get(self, names_set):
-        train_set, val_set, test_set = self.split_dataset(names_set, 
-                                        train_ratio=0.6, 
-                                        val_ratio=0.2)
+    def get(self, names_set, only_prediction=False):
+        if not only_prediction:
+            train_set, val_set, test_set = self.split_dataset(names_set, 
+                                            train_ratio=0.6, 
+                                            val_ratio=0.2)
+        else:
+            train_set = []
+            val_set = []
+            test_set = names_set
+
+            test_dataset = ABCDataset(
+            src_dir=self.input_dir,
+            names_set=test_set,
+            dataset_grids=self.config['data']['dataset_grids'],
+            input_size=self.config['data']['input_size'],
+            mask_threshold=self.config['data']['mask_threshold'],
+            sdf_scaling_value=self.config['data']['sdf_scaling_value'],
+            is_crop=self.config['data']['is_crop']['test'],
+            crops_ratio=self.config['data']['crops_ratio'],
+            crops_threshold=self.config['data']['crops_threshold'],
+            unique_random_direction=self.config['data']['unique_random_direction'],
+            is_test=True,
+            only_prediction=only_prediction,
+            n_jobs=-1
+        )
+            train_dataloader, val_dataloader, test_dataloader = self.get_vdb_data_loaders(
+            train_dataset=None,
+            val_dataset=None,
+            test_dataset=test_dataset,
+            batch_size=16,
+            shuffle=True,
+            num_workers=0,
+            is_eval=True
+        )
+            return None, None, test_dataloader
+        
         if self.n_samples is not None:
             if not isinstance(self.n_samples, int):
                 raise ValueError("n_samples must be an integer or None")
