@@ -35,7 +35,7 @@ if __name__ == "__main__":
     input_dir = '/user/spanwar/home/Documents/learn-fvdb/ponq/PoNQ/out'
     gt_dir = '/data/workspaces/spanwar/dataset/thingi/GT_thingi'
 
-    with open('/user/spanwar/home/Documents/learn-fvdb/ssu/SSU/benchmarking/thingi30.txt', 'r') as f:
+    with open('/user/spanwar/home/Documents/learn-fvdb/ssu/SSU/run/thingi30.txt', 'r') as f:
         water_filenames = f.read().splitlines()
 
     for size in [32, 64, 128]:
@@ -49,7 +49,7 @@ if __name__ == "__main__":
                 joblib.delayed(run_eval)(file, file_obj, input_dir, gt_dir)for file, file_obj in zip(filenames, filenames_obj)
             )
 
-        print(f'number of samples for size: {size}, method: rfta:', len(out))
+        print(f'number of samples for size: {size}, method: ponq:', len(out))
         out = np.array(out)
         cd1 = out[:, 1].astype(float).mean(axis=0)
         cd2 = out[:, 2].astype(float).mean(axis=0)
@@ -57,6 +57,7 @@ if __name__ == "__main__":
         nc = out[:, 4].astype(float).mean(axis=0)
         ecd2 = out[:, 5].astype(float).mean(axis=0)
         ef1 = out[:, 6].astype(float).mean(axis=0)
-        print('size:', size, 'method:', 'rfta', 'CD1  (x 1e-5):', cd1*1e5,
-                'CD2  (x 1e-5):', cd2*1e5, 'F1:', f1, 'NC:', nc, 'ECD2:', ecd2, 'EF1:', ef1)
+        # print('size:', size, 'method:', 'rfta', 'CD1  (x 1e-5):', cd1*1e5:.3f,
+        #         'CD2  (x 1e-5):', cd2*1e5:.3f, 'F1:', f1:.3f, 'NC:', nc:.3f, 'ECD2:', ecd2*1e2:.3f, 'EF1:', ef1:.3f)
+        print(f"size: {size} method: ponq CD1 (x 1e-5): {cd1*1e5:.3f} CD2 (x 1e-5): {cd2*1e5:.3f} F1: {f1:.3f} NC: {nc:.3f} ECD2: {ecd2*1e2:.3f} EF1: {ef1:.3f}")
         
