@@ -237,7 +237,7 @@ class Evaluator:
                 ]
         df_log = pd.DataFrame(data, columns=columns)
         print(df_log)
-        print(f"cd1_32: {cd1_32 * 1e5:.3f}, cd2_32: {cd2_32 * 1e5:.3f}, f1_32: {f1_32:.3f}, nc_32: {nc_32:.3f}, ecd2_32: {ecd2_32:.3f}, ef1_32: {ef1_32:.3f}")
-        print(f"cd1_64: {cd1_64 * 1e5:.3f}, cd2_64: {cd2_64 * 1e5:.3f}, f1_64: {f1_64:.3f}, nc_64: {nc_64:.3f}, ecd2_64: {ecd2_64:.3f}, ef1_64: {ef1_64:.3f}")
-        print(f"cd1_128: {cd1_128 * 1e5:.3f}, cd2_128: {cd2_128 * 1e5:.3f}, f1_128: {f1_128:.3f}, nc_128: {nc_128:.3f}, ecd2_128: {ecd2_128:.3f}, ef1_128: {ef1_128:.3f}")
+        print(f"cd1_32: {cd1_32 * 1e5:.3f}, cd2_32: {cd2_32 * 1e5:.3f}, f1_32: {f1_32:.3f}, nc_32: {nc_32:.3f}, ecd2_32: {ecd2_32  * 1e2:.3f}, ef1_32: {ef1_32:.3f}")
+        print(f"cd1_64: {cd1_64 * 1e5:.3f}, cd2_64: {cd2_64 * 1e5:.3f}, f1_64: {f1_64:.3f}, nc_64: {nc_64:.3f}, ecd2_64: {ecd2_64  * 1e2:.3f}, ef1_64: {ef1_64:.3f}")
+        print(f"cd1_128: {cd1_128 * 1e5:.3f}, cd2_128: {cd2_128 * 1e5:.3f}, f1_128: {f1_128:.3f}, nc_128: {nc_128:.3f}, ecd2_128: {ecd2_128  * 1e2:.3f}, ef1_128: {ef1_128:.3f}")
 
