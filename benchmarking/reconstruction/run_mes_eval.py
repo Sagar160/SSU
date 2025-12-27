@@ -32,13 +32,13 @@ def run_eval(filename, filename_obj, input_dir, gt_dir):
     
 
 if __name__ == "__main__":
-    input_dir = 'data/mes'
+    input_dir = '/data/workspaces/spanwar/results/ssu/mes_and_rfta_objs/mes_rfta_objs/mes'
     gt_dir = '/data/workspaces/spanwar/dataset/thingi/GT_thingi'
 
-    with open('/user/spanwar/home/Documents/learn-fvdb/ssu/SSU/benchmarking/thingi30.txt', 'r') as f:
+    with open('/user/spanwar/home/Documents/learn-fvdb/ssu/SSU/run/thingi30.txt', 'r') as f:
         water_filenames = f.read().splitlines()
 
-    for size in [32, 64]:
+    for size in [32]:
         # filenames = os.listdir(input_dir)
         filenames = [
             f'mes_{size}_{f}.obj' for f in water_filenames]
@@ -56,6 +56,7 @@ if __name__ == "__main__":
         nc = out[:, 4].astype(float).mean(axis=0)
         ecd2 = out[:, 5].astype(float).mean(axis=0)
         ef1 = out[:, 6].astype(float).mean(axis=0)
-        print('size:', size, 'method:', 'mes', 'CD1  (x 1e-5):', cd1*1e5,
-                'CD2  (x 1e-5):', cd2*1e5, 'F1:', f1, 'NC:', nc, 'ECD2:', ecd2, 'EF1:', ef1)
+        # print('size:', size, 'method:', 'mes', 'CD1  (x 1e-5):', cd1*1e5,
+                # 'CD2  (x 1e-5):', cd2*1e5, 'F1:', f1, 'NC:', nc, 'ECD2:', ecd2, 'EF1:', ef1)
+        print(f"size: {size} method: mes CD1 (x 1e-5): {cd1*1e5:.3f} CD2 (x 1e-5): {cd2*1e5:.3f} F1: {f1:.3f} NC: {nc:.3f} ECD2: {ecd2*1e2:.3f} EF1: {ef1:.3f}")
         

@@ -15,11 +15,12 @@ with open('/user/spanwar/home/Documents/learn-fvdb/ssu/SSU/benchmarking/thingi30
     filenames = f.read().splitlines()
 
 filenames = [f'{name}.obj' for name in filenames]
+output_dir = '/data/workspaces/spanwar/results/ssu/mes_and_rfta_objs/mes_rfta_objs'
 
 for res in [32, 64, 128]:
     for filename in filenames:
         print('Processing file:', filename, 'at resolution:', res)
-        if os.path.exists(f"data/rfta_{res}_{filename.split('.')[0]}.obj"):
+        if os.path.exists(f"{output_dir}/rfta_{res}_{filename.split('.')[0]}.obj"):
             continue
         
         j = res
@@ -35,4 +36,4 @@ for res in [32, 64, 128]:
         # Vr, Fr, P, N = gpy.reach_for_the_arcs(U, S, verbose = True, parallel = True, return_point_cloud=True, fine_tune_iters=10)
         Vr, Fr = gpy.reach_for_the_arcs(U, S, verbose=True, parallel=True, return_point_cloud=False, max_points_per_sphere=3, fine_tune_iters=3)
         # print('filename:', filename, Vr.min(), Vr.max())
-        gpy.write_mesh(f"data/rfta_{res}_{filename.split('.')[0]}.obj", Vr, Fr)
+        gpy.write_mesh(f"{output_dir}/rfta_{res}_{filename.split('.')[0]}.obj", Vr, Fr)
