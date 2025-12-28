@@ -71,7 +71,7 @@ def run_eval(filename, filename_obj, input_dir, gt_dir, method, size):
         sdf_data = f[f'zoom_{4}_{method}_sdf'][:]
     v, f, _, _ = measure.marching_cubes(sdf_data, level=0.0)
     v = v / (sdf_data.shape[0]-1) 
-    if method == 'bspline':
+    if method == 'bspline' or method == 'trilinear':
         sdf_comparison = compare_pred_with_gt_sdf(filename, sdf_data, size)
     # v = NDCnormalize(v, return_scale=False)
     pred_mesh = trimesh.Trimesh(vertices=v, faces=f)
@@ -100,7 +100,7 @@ if __name__ == "__main__":
         water_filenames = f.read().splitlines()
 
     for size in [32, 64, 128]:
-        for method in ['bspline']:
+        for method in ['trilinear']: # 'bspline'
             # filenames = os.listdir(input_dir)
             filenames = [
                 f'{size}_{f}_interpolation.hdf5' for f in water_filenames]

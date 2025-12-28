@@ -111,8 +111,9 @@ def run(filename, input_dir, output_dir=None):
         arr = load_3d_array(filename, input_dir, size)
         
         # methods = ['nearest', 'trilinear', 'bspline', 'lanczos']
-        methods = ['bspline']
+        methods = ['trilinear']
         for method in methods:
+            print(f"{filename}  Applying {method} interpolation for size {size}")
             # output_size = (size)*4   # e.g., 33 -> 129
             # Apply interpolation
             # zoomed_arr = zoom(arr, zoom=4, order=3)  # order=3 for bspline
@@ -149,13 +150,22 @@ def run(filename, input_dir, output_dir=None):
             # 4. Reshape the result back to 3D volume
             # zoomed_arr = zoomed_arr_flat.reshape(up_shape)
             zoom_factor=up_shape_len/size
-            zoomed_arr = zoom(
-                    arr,
-                    zoom=(zoom_factor, zoom_factor, zoom_factor),
-                    order=3,            # cubic B-spline
-                    mode="nearest",     # boundary handling
-                    prefilter=True      # MUST be True for accuracy
-                )
+            if method == 'trilinear':
+                zoomed_arr = zoom(
+                        arr,
+                        zoom=(zoom_factor, zoom_factor, zoom_factor),
+                        order=1,            # cubic B-spline
+                        mode="nearest",     # boundary handling
+                        prefilter=True      # MUST be True for accuracy
+                    )
+            elif method == 'bispline':
+                zoomed_arr = zoom(
+                        arr,
+                        zoom=(zoom_factor, zoom_factor, zoom_factor),
+                        order=3,            # cubic B-spline
+                        mode="nearest",     # boundary handling
+                        prefilter=True      # MUST be True for accuracy
+                    )
             # zoomed_arr = bspline_upsample(
             #     volume=arr,
             #     out_size=(up_shape),
