@@ -9,14 +9,15 @@ import numpy as np
 import joblib
 from lie_cone import LieConeSDFReconstruction
 
-with open('/user/spanwar/home/Documents/learn-fvdb/ssu/SSU/benchmarking/thingi30.txt', 'r') as f:
+with open('/user/spanwar/home/Documents/learn-fvdb/ssu/SSU/run/thingi30.txt', 'r') as f:
     filenames = f.read().splitlines()
 
 filenames = [f'{name}.obj' for name in filenames]
 
 def run_mes(filename, res):
+    output_dir = '/data/workspaces/spanwar/results/ssu/mes_and_rfta_objs/mes_rfta_objs/mes'
     print('Processing file:', filename, 'at resolution:', res)
-    if os.path.exists(f"data/mes/mes_{res}_{filename.split('.')[0]}.obj"):
+    if os.path.exists(f"{output_dir}/mes_{res}_{filename.split('.')[0]}.obj"):
         return [filename, res, 'exists']
     
     j = res
@@ -34,12 +35,12 @@ def run_mes(filename, res):
                                     psr_screening_weight=psr_screening_weight)
 
     v, f = cone.V, cone.F
-    gpy.write_mesh(f"data/mes/mes_{res}_{filename.split('.')[0]}.obj", v, f)
+    gpy.write_mesh(f"{output_dir}/mes_{res}_{filename.split('.')[0]}.obj", v, f)
     return [filename, res, 'done']
 
 for res in [32, 64, 128]:
-    for filename in filenames:
-        run_mes(filename, res)
-    # out = joblib.Parallel(n_jobs=-1)(
-    #     joblib.delayed(run_mes)(filename, res) for filename in filenames
-    # )
+    # for filename in filenames:
+    #     run_mes(filename, res)
+    out = joblib.Parallel(n_jobs=-1)(
+        joblib.delayed(run_mes)(filename, res) for filename in filenames
+    )

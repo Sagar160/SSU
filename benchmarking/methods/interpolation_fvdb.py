@@ -107,6 +107,11 @@ def run(filenames, input_dir, gt_dir=None, ssu_pred_dir=None):
             
             # trilinear
             up_vdb = trilinear_upsample(small_vdb, large_grid)
+
+            # export sdf
+            trilinear_sdf_dir = '/data/workspaces/spanwar/results/ssu/trilinear/trilinear_fvdb_sdfs'
+            trilinear_sdf_path = os.path.join(trilinear_sdf_dir, f'{size-1}_{filename.split(".")[0]}.nvdb')
+            fvdb.save(trilinear_sdf_path, up_vdb.grid, up_vdb.data, compressed=True)
             
             # compare sdf for size 33
             if size == 33 or size == 65 or size == 129:
@@ -124,7 +129,7 @@ def run(filenames, input_dir, gt_dir=None, ssu_pred_dir=None):
             # pred_mesh_v2 = trimesh.Trimesh(vertices=(v-0.5)*2, faces=f)
             
             # export mesh
-            # trilinear_dir = '/data/workspaces/spanwar/results/ssu/trilinear_fvdb'
+            # trilinear_dir = '/data/workspaces/spanwar/results/ssu/trilinear/trilinear_fvdb_objs'
             # trilinear_pred_path = os.path.join(trilinear_dir, f'{size}_{filename.split(".")[0]}.obj')
             # pred_mesh_v2.export(trilinear_pred_path)
             
@@ -202,7 +207,8 @@ def run_parallel(n_jobs=-1):
     nc_33 = results_33[:, 4].astype(float).mean(axis=0)
     ecd2_33 = results_33[:, 5].astype(float).mean(axis=0)
     ef1_33 = results_33[:, 6].astype(float).mean(axis=0)
-    print(f'33: cd1*1e-5: {cd1_33*1e5}, cd2*1e-5: {cd2_33*1e5}, f1: {f1_33}, nc: {nc_33}, ecd2: {ecd2_33}, ef1: {ef1_33}')
+    # print(f'33: cd1*1e-5: {cd1_33*1e5}, cd2*1e-5: {cd2_33*1e5}, f1: {f1_33}, nc: {nc_33}, ecd2: {ecd2_33}, ef1: {ef1_33}')
+    print(f'33: method trilinear cd1*1e-5: {cd1_33*1e5:.3f}, cd2*1e-5: {cd2_33*1e5:.3f}, f1: {f1_33:.3f}, nc: {nc_33:.3f}, ecd2: {ecd2_33*1e2:.3f}, ef1: {ef1_33:.3f}')
     # 65
     results_65 = np.array(results[65])
     cd1_65 = results_65[:, 1].astype(float).mean(axis=0)
@@ -211,7 +217,8 @@ def run_parallel(n_jobs=-1):
     nc_65 = results_65[:, 4].astype(float).mean(axis=0)
     ecd2_65 = results_65[:, 5].astype(float).mean(axis=0)
     ef1_65 = results_65[:, 6].astype(float).mean(axis=0)
-    print(f'65: cd1*1e-5: {cd1_65*1e5}, cd2*1e-5: {cd2_65*1e5}, f1: {f1_65}, nc: {nc_65}, ecd2: {ecd2_65}, ef1: {ef1_65}')
+    # print(f'65: cd1*1e-5: {cd1_65*1e5}, cd2*1e-5: {cd2_65*1e5}, f1: {f1_65}, nc: {nc_65}, ecd2: {ecd2_65}, ef1: {ef1_65}')
+    print(f'65: method trilinear cd1*1e-5: {cd1_65*1e5:.3f}, cd2*1e-5: {cd2_65*1e5:.3f}, f1: {f1_65:.3f}, nc: {nc_65:.3f}, ecd2: {ecd2_65*1e2:.3f}, ef1: {ef1_65:.3f}')
     # 129
     results_129 = np.array(results[129])
     cd1_129 = results_129[:, 1].astype(float).mean(axis=0)
@@ -220,7 +227,8 @@ def run_parallel(n_jobs=-1):
     nc_129 = results_129[:, 4].astype(float).mean(axis=0)
     ecd2_129 = results_129[:, 5].astype(float).mean(axis=0)
     ef1_129 = results_129[:, 6].astype(float).mean(axis=0)
-    print(f'129: cd1*1e-5: {cd1_129*1e5}, cd2*1e-5: {cd2_129*1e5}, f1: {f1_129}, nc: {nc_129}, ecd2: {ecd2_129}, ef1: {ef1_129}')
+    # print(f'129: cd1*1e-5: {cd1_129*1e5}, cd2*1e-5: {cd2_129*1e5}, f1: {f1_129}, nc: {nc_129}, ecd2: {ecd2_129}, ef1: {ef1_129}')
+    print(f'129: method trilinear cd1*1e-5: {cd1_129*1e5:.3f}, cd2*1e-5: {cd2_129*1e5:.3f}, f1: {f1_129:.3f}, nc: {nc_129:.3f}, ecd2: {ecd2_129*1e2:.3f}, ef1: {ef1_129:.3f}')
 
 if __name__ == "__main__":
     run_parallel()

@@ -36,16 +36,17 @@ def load_prediction(filename, input_dir, size, device='cpu'):
     grid, data, _ = fvdb.load(os.path.join(input_dir, f'{size}_{filename}.nvdb'), device=device)
     return grid, data
 
-def compare_pred_with_gt_sdf(file_name, inter_pred):
+def compare_pred_with_gt_sdf(file_name, inter_pred, size):
     file_name = file_name.split('_')[1] + '.hdf5'
-    input_dir='/data/workspaces/spanwar/dataset/thingi/thingi_all/gt_Thingi32_NDC_norm'
-    ssu_pred_dir = '/data/workspaces/spanwar/results/ssu/test_predictions/77_eval_thingi32'    
-    gt_arr = load_3d_array(file_name, input_dir, 129)
-    ssu_pred = load_prediction(file_name, ssu_pred_dir, 32, device='cpu')
+    input_dir='/data/workspaces/spanwar/dataset/thingi/thingi_large_all/gt_thingi_large'
+    ssu_pred_dir = '/data/workspaces/spanwar/results/ssu/test_predictions/77_eval_thingi32'  
+    up_size = (size)*4 + 1  
+    gt_arr = load_3d_array(file_name, input_dir, up_size)
+    ssu_pred = load_prediction(file_name, ssu_pred_dir, size, device='cpu')
 
     (grid_p_32, data_p_32) = ssu_pred
     ijk_p = grid_p_32.ijk.jdata.cpu().detach().numpy()
-    data_p = data_p_32.jdata.cpu().detach().numpy()/64
+    data_p = data_p_32.jdata.cpu().detach().numpy()/(size*2)
     
     real_data = gt_arr[ijk_p[:,0], ijk_p[:,1], ijk_p[:,2]]
     inter_data = inter_pred[ijk_p[:,0], ijk_p[:,1], ijk_p[:,2]]
@@ -64,21 +65,20 @@ def compare_pred_with_gt_sdf(file_name, inter_pred):
 
 
 def run_eval(filename, filename_obj, input_dir, gt_dir, method, size):
-    sdf_comparison_32=None
     # load pred mesh
     input_path = os.path.join(input_dir, filename)
     with h5py.File(input_path, 'r') as f:
         sdf_data = f[f'zoom_{4}_{method}_sdf'][:]
     v, f, _, _ = measure.marching_cubes(sdf_data, level=0.0)
     v = v / (sdf_data.shape[0]-1) 
-    if '32_' in filename and method == 'bspline':
-        sdf_comparison_32 = compare_pred_with_gt_sdf(filename, sdf_data)
+    if method == 'bspline':
+        sdf_comparison = compare_pred_with_gt_sdf(filename, sdf_data, size)
     # v = NDCnormalize(v, return_scale=False)
     pred_mesh = trimesh.Trimesh(vertices=v, faces=f)
 
     # export mesh
-    pred_mesh_v2 = trimesh.Trimesh(vertices=(v-0.5)*2, faces=f)
-    pred_mesh_v2.export(f'/data/workspaces/spanwar/results/ssu/bispline_objs/{size}_{filename_obj}.obj')
+    # pred_mesh_v2 = trimesh.Trimesh(vertices=(v-0.5)*2, faces=f)
+    # pred_mesh_v2.export(f'/data/workspaces/spanwar/results/ssu/bispline_objs/{size}_{filename_obj}.obj')
 
     # load gt mesh
     gt_obj_name = filename_obj + '.obj'
@@ -89,14 +89,14 @@ def run_eval(filename, filename_obj, input_dir, gt_dir, method, size):
     data = (filename_obj, gt_mesh, pred_mesh)
     result = get_cd_f1_nc(data, scale_gt=1.0, eval_normalization=None)
     # print(f'Finished evaluation for {filename_obj}')
-    return sdf_comparison_32, result
+    return sdf_comparison, result
     
 
 if __name__ == "__main__":
     input_dir = '/data/workspaces/spanwar/results/ssu/interpolation'
     gt_dir = '/data/workspaces/spanwar/dataset/thingi/GT_thingi'
 
-    with open('/user/spanwar/home/Documents/learn-fvdb/ssu/SSU/benchmarking/thingi30.txt', 'r') as f:
+    with open('/user/spanwar/home/Documents/learn-fvdb/ssu/SSU/run/thingi30.txt', 'r') as f:
         water_filenames = f.read().splitlines()
 
     for size in [32, 64, 128]:
@@ -108,20 +108,20 @@ if __name__ == "__main__":
             out = joblib.Parallel(n_jobs=-1)(
                     joblib.delayed(run_eval)(file, file_obj, input_dir, gt_dir, method, size)for file, file_obj in zip(filenames, filenames_obj)
                 )
-            sdf_comparison_32 = [o[0] for o in out if o[0] is not None]
-            if len(sdf_comparison_32) != 0:
-                print('number of samples for sdf comparison:', len(sdf_comparison_32))
-                sdf_comparison_32 = np.array(sdf_comparison_32)
-                mse_32 = sdf_comparison_32[:,0].mean()
-                l1_32 = sdf_comparison_32[:,1].mean()
+            sdf_comparison = [o[0] for o in out if o[0] is not None]
+            if len(sdf_comparison) != 0:
+                print('number of samples for sdf comparison:', len(sdf_comparison))
+                sdf_comparison = np.array(sdf_comparison)
+                mse = sdf_comparison[:,0].mean()
+                l1 = sdf_comparison[:,1].mean()
 
-                mse_32_m = sdf_comparison_32[:,2].mean()
-                l1_32_m = sdf_comparison_32[:,3].mean()
-                num_voxels_32 = sdf_comparison_32[:,4].sum()
+                mse_m = sdf_comparison[:,2].mean()
+                l1_m = sdf_comparison[:,3].mean()
+                num_voxels = sdf_comparison[:,4].sum()
                 print('#'*20)
-                print(f'Size: {size}, Method: {method} SSU 32: mse: {mse_32}, l1: {l1_32}')
-                print(f'Size: {size}, Method: {method} Interpolation 32: mse: {mse_32_m}, l1: {l1_32_m}')
-                print(f'Number of voxels 32: {num_voxels_32}')
+                print(f'Size: {size}, Method: {method} SSU 32: mse: {mse}, l1: {l1}')
+                print(f'Size: {size}, Method: {method} Interpolation 32: mse: {mse_m}, l1: {l1_m}')
+                print(f'Number of voxels 32: {num_voxels}')
                 print('#'*20)
 
             out = [o[1] for o in out]
@@ -133,6 +133,7 @@ if __name__ == "__main__":
             nc = out[:, 4].astype(float).mean(axis=0)
             ecd2 = out[:, 5].astype(float).mean(axis=0)
             ef1 = out[:, 6].astype(float).mean(axis=0)
-            print('size:', size, 'method:', method, 'CD1  (x 1e-5):', cd1*1e5,
-                  'CD2  (x 1e-5):', cd2*1e5, 'F1:', f1, 'NC:', nc, 'ECD2:', ecd2, 'EF1:', ef1)
+            # print('size:', size, 'method:', method, 'CD1  (x 1e-5):', cd1*1e5,
+            #       'CD2  (x 1e-5):', cd2*1e5, 'F1:', f1, 'NC:', nc, 'ECD2:', ecd2, 'EF1:', ef1)
+            print(f"size: {size} method: {method} CD1 (x 1e-5): {cd1*1e5:.3f} CD2 (x 1e-5): {cd2*1e5:.3f} F1: {f1:.3f} NC: {nc:.3f} ECD2: {ecd2*1e2:.3f} EF1: {ef1:.3f}")
         
