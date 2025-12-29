@@ -77,8 +77,8 @@ def run_eval(filename, filename_obj, input_dir, gt_dir, method, size):
     pred_mesh = trimesh.Trimesh(vertices=v, faces=f)
 
     # export mesh
-    # pred_mesh_v2 = trimesh.Trimesh(vertices=(v-0.5)*2, faces=f)
-    # pred_mesh_v2.export(f'/data/workspaces/spanwar/results/ssu/bispline_objs/{size}_{filename_obj}.obj')
+    pred_mesh_v2 = trimesh.Trimesh(vertices=(v-0.5)*2, faces=f)
+    pred_mesh_v2.export(f'/data/workspaces/spanwar/results/ssu/trilinear/trilinear_objs/{size}_{filename_obj}.obj')
 
     # load gt mesh
     gt_obj_name = filename_obj + '.obj'
