@@ -8,7 +8,7 @@ from tqdm import tqdm
 
 with open('run/thingi30.txt', 'r') as f:
     filenames = f.read().splitlines()
-filenames = [f'{name}.obj' for name in filenames][:1]
+filenames = [f'{name}.obj' for name in filenames]
 
 
 def describe_exe_results(results):
@@ -28,7 +28,7 @@ def describe_exe_results(results):
 
 def rfta_execution_time():
     execution_time_results = []
-    for res in [32, 64, 128]:
+    for res in [128]:
         for filename in tqdm(filenames):
             print('Processing file:', filename, 'at resolution:', res)
 
@@ -44,8 +44,11 @@ def rfta_execution_time():
                 S = S*2
 
             # Reconstruct triangle mesh
-            Vr, Fr = gpy.reach_for_the_arcs(
-                U, S, verbose=False, parallel=True, return_point_cloud=False, max_points_per_sphere=3, fine_tune_iters=3)
+            try:
+                Vr, Fr = gpy.reach_for_the_arcs(
+                    U, S, verbose=True, parallel=True, return_point_cloud=False, max_points_per_sphere=3, fine_tune_iters=3)
+            except:
+                print("No mesh:", filename)
             end_time = time.time()
             execution_time = end_time - start_time
             execution_time_results.append((filename, res+1, execution_time))

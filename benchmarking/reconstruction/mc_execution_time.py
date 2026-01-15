@@ -108,7 +108,7 @@ def get_all_shifted_positions(vdb_tensor, size, upsample_factor):
 def prepare_all_inputs(sdf_numpy, grid_size):
     '''prepare voxel 4D input: SDF+displacement'''
     mask_threshold = grid_size*2+1
-    mask = mt.make_mask_close(sdf_numpy, mask_threshold)
+    mask = mt.make_mask_close(sdf_numpy, 3/5*mask_threshold)
     input_vdb = sdf_to_vdb(sdf_numpy, mask, grid_size)
     return input_vdb
 
@@ -145,7 +145,9 @@ def mc_execution_time():
             with h5py.File(f'/home/nmaruani/data/gt_Thingi32_NDC_norm/{filename.split(".")[0]}.hdf5', 'r') as f:
                 sdf_numpy = f[f'{res}_sdf'][:]
             all_inputs = prepare_all_inputs(sdf_numpy, res+1)
-            Vr, Fr = vdb_marching_cubes(all_inputs)
+            Vr, Fr = vdb_marching_cubes(-all_inputs)
+            mt.export_obj(
+                2*Vr-1, Fr, 'mc_meshes/{}_{}.obj'.format(res, filename.split(".")[0]))
             end_time = time.time()
             execution_time = end_time - start_time
             execution_time_results.append((filename, res+1, execution_time))
