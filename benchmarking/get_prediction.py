@@ -13,6 +13,7 @@ sys.path.append('../src')
 # config packages
 import read_config
 from models import unet as unetModels
+from models import encoder_decoder as edModels
 
 
 def clear_gpu_memory():
@@ -54,10 +55,10 @@ def main(config_file):
 
     config = read_config.read_yaml_config(f'{config_file}')
 
-    # data_loader = DataLoader(input_dir=config['data']['input_dir'], 
-    #                         dataset_grids=config['data']['dataset_grids'],
-    #                         upsample_factors=config['data']['upsampling_factors'],)
-    # test_dataloader = data_loader.get(names_set=file_names)  # Use all files in thingi30.txt
+    data_loader = DataLoader(input_dir=config['data']['input_dir'], 
+                            dataset_grids=config['data']['dataset_grids'],
+                            upsample_factors=config['data']['upsampling_factors'],)
+    test_dataloader = data_loader.get(names_set=file_names)  # Use all files in thingi30.txt
 
     # model = unetModels.FVDBUNetBase(
     #             in_channels=4,
@@ -66,11 +67,14 @@ def main(config_file):
     # model.load_state_dict(torch.load(config['model']['save_model_path']))
     # model = model.to('cuda' if torch.cuda.is_available() else 'cpu')
 
-    # save_predictions(test_loader=test_dataloader,
-    #                 upsample_factor_dict=config['data']['upsampling_factors'],
-    #                 save_predictions_dir=config['prediction']['save_predictions_dir'],
-    #                 prediction_folder_name=config['prediction']['prediction_folder_name'],
-    #                 model=model)
+    model = torch.load(config['model']['save_model_path'])
+    model = model.to('cuda' if torch.cuda.is_available() else 'cpu')
+
+    save_predictions(test_loader=test_dataloader,
+                    upsample_factor_dict=config['data']['upsampling_factors'],
+                    save_predictions_dir=config['prediction']['save_predictions_dir'],
+                    prediction_folder_name=config['prediction']['prediction_folder_name'],
+                    model=model)
     
     evaluator = eval.Evaluator(
                         model_name=config['prediction']['prediction_folder_name'],

@@ -16,6 +16,7 @@ from eval import ABC_eval
 from models import unet
 from models import model as simpleModels
 from models import unet as unetModels
+from models import encoder_decoder as edModels
 # from training import model_training_v2 as model_training
 from training import model_training_v4 as model_training
 from logger import wandb_logging
@@ -123,8 +124,10 @@ def main(config_file):
             #     in_channels=in_channels + vector_dim + t_dim + t_pos + s_pos + extra_dim,
             #     out_channels=out_channels)
 
-            model = simpleModels.CNN_vanilla_without_transpose(in_channels=in_channels + vector_dim + t_dim + t_pos + s_pos + extra_dim, 
-                                                               features=256, out_channels=out_channels)
+            # model = simpleModels.CNN_vanilla_without_transpose(in_channels=in_channels + vector_dim + t_dim + t_pos + s_pos + extra_dim, 
+            #                                                    features=256, out_channels=out_channels)
+
+            model = edModels.EncoderDecoder()
 
         trainable_params = st.print_model_summary(model)
         logger.update_config('model_parameters', trainable_params)
