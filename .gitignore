@@ -144,3 +144,4 @@ dmypy.json
 result_*
 *.sdf
 *.pdf
+*.pth
