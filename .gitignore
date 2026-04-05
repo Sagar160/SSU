@@ -145,3 +145,7 @@ result_*
 *.sdf
 *.pdf
 *.pth
+
+# avoid wandb logs
+wandb/
+**/wandb/
