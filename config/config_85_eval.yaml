@@ -1,0 +1,26 @@
+data:
+  # general
+  input_dir: '/data/workspaces/spanwar/dataset/thingi/thingi_all/gt_Thingi32_NDC_norm'
+  data_description: &data_description 'thingi32 NDC normalized'
+  data_name: &data_name 'thingi32'
+
+  # dataset
+  dataset_grids: &dataset_grids [33, 65, 129] #[32, 128]
+  upsampling_factors: &upsampling_factors {33: 4, 65: 4, 129: 4}
+
+model:
+  save_model_path: '/data/workspaces/spanwar/results/ssu/save_models/83_encoder_decoder_exp_v2_256_5.pth'
+
+prediction:
+  prediction_folder_name: '85_eval_thingi32' # folder name to save predictions
+  save_predictions_dir: '/data/workspaces/spanwar/results/ssu/test_predictions'
+
+eval:
+  only_eval: &only_eval False
+  run_eval: &run_eval True
+  eval_dir: '/data/workspaces/spanwar/dataset/thingi/GT_thingi'
+  data_name: &eval_data_name 'ABC'
+  normalize: &eval_normalize 'NDC Normalization'
+  # upsampling_level: &upsampling_level 2 #2
+  eval_job: &eval_job 40 #40
+  eval_discription: &eval_discription {32: '32 -> 128', 64: '64 -> 256', 128: '128 -> 512'}

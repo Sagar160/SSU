@@ -127,7 +127,7 @@ def main(config_file):
             # model = simpleModels.CNN_vanilla_without_transpose(in_channels=in_channels + vector_dim + t_dim + t_pos + s_pos + extra_dim, 
             #                                                    features=256, out_channels=out_channels)
 
-            model = edModels.EncoderDecoder()
+            model = edModels.EncoderDecoder(256,5)
 
         trainable_params = st.print_model_summary(model)
         logger.update_config('model_parameters', trainable_params)

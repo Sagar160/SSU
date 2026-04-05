@@ -41,6 +41,8 @@ class Decoder(nn.Module):
     def forward(self, x):
         return self.net(x)
 
+# 128,5
+# 256,5
 
 class EncoderDecoder(nn.Module):
     def __init__(self, features=256, n_layers=10):
