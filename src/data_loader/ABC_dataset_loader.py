@@ -20,10 +20,10 @@ class ABCDataset(Dataset):
                  input_size,
                  mask_threshold, # in term grid size i,e grid size = 32 -> 3/32
                  sdf_scaling_value,
-                 is_crop,
-                 crops_ratio,
-                 crops_threshold,
-                 unique_random_direction, 
+                 is_crop=None,
+                 crops_ratio=None,
+                 crops_threshold=None,
+                 unique_random_direction=True, 
                  max_tries=100, 
                  is_test=False,
                  only_prediction=False,
@@ -387,9 +387,9 @@ class ABCDataLoader():
                 input_size=self.config['data']['input_size'],
                 mask_threshold=self.config['data']['mask_threshold'],
                 sdf_scaling_value=self.config['data']['sdf_scaling_value'],
-                is_crop=self.config['data']['is_crop']['train'],
-                crops_ratio=self.config['data']['crops_ratio'],
-                crops_threshold=self.config['data']['crops_threshold'],
+                # is_crop=self.config['data']['is_crop']['train'],
+                # crops_ratio=self.config['data']['crops_ratio'],
+                # crops_threshold=self.config['data']['crops_threshold'],
                 unique_random_direction=self.config['data']['unique_random_direction'],
                 n_jobs=-1
             )
@@ -400,9 +400,9 @@ class ABCDataLoader():
                 input_size=self.config['data']['input_size'],
                 mask_threshold=self.config['data']['mask_threshold'],
                 sdf_scaling_value=self.config['data']['sdf_scaling_value'],
-                is_crop=self.config['data']['is_crop']['val'],
-                crops_ratio=self.config['data']['crops_ratio'],
-                crops_threshold=self.config['data']['crops_threshold'],
+                # is_crop=self.config['data']['is_crop']['val'],
+                # crops_ratio=self.config['data']['crops_ratio'],
+                # crops_threshold=self.config['data']['crops_threshold'],
                 unique_random_direction=self.config['data']['unique_random_direction'],
                 n_jobs=-1
             )
@@ -417,9 +417,9 @@ class ABCDataLoader():
             input_size=self.config['data']['input_size'],
             mask_threshold=self.config['data']['mask_threshold'],
             sdf_scaling_value=self.config['data']['sdf_scaling_value'],
-            is_crop=self.config['data']['is_crop']['test'],
-            crops_ratio=self.config['data']['crops_ratio'],
-            crops_threshold=self.config['data']['crops_threshold'],
+            # is_crop=self.config['data']['is_crop']['test'],
+            # crops_ratio=self.config['data']['crops_ratio'],
+            # crops_threshold=self.config['data']['crops_threshold'],
             unique_random_direction=self.config['data']['unique_random_direction'],
             is_test=True,
             n_jobs=-1

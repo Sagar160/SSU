@@ -1,4 +1,4 @@
-# SSU: Sparse SDF Upsampler
+# SuperSDF: Learning-based Sparse Signed Distance Field Super-Resolution
 
 ## Downloading data
 
@@ -65,15 +65,26 @@ cd ../..
 
 ## Implementation
 
-Please consider this config file: config_66_21102025_1200.yaml
+Please consider this config file: config_test.yaml
 ```shell
 conda activate ssu
 cd ssu/run
-python main.py --config config_66_21102025_1200.yaml
+python main.py --config config_test.yaml
 ```
 Now you can play with the parameters and run different experiements.
 
 if you want to change model, can be done in main.py file.
+
+## 🚀 Demo
+
+For a hands-on experience, please refer to the **demo notebook** located at `demo/demo.ipynb`. You can load the **trained model** directly to test results and run inference on your own data.
+
+# 📑 Acknowledgments
+
+We would like to express our gratitude to the following project teams and organizations for their invaluable support and contributions to this work:
+
+*   **[TITANE Project-Team](https://inria.fr)**: For their expertise and guidance in geometric modeling and 3D vision.
+*   **[Inria Centre at Université Côte d'Azur](https://inria.fr)**: For providing the research environment and resources necessary for this project.
 
 
   
