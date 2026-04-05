@@ -43,6 +43,26 @@ pip install .
 cd ../..
 ```
 
+# Configuration File Overview
+
+### 📊 Logging
+*   **`logging`**: Enable or disable logging to **Weights & Biases (WandB)**.
+
+### 📁 Data
+*   **`dataset_grids`**: Specific grid data to be loaded.
+*   **`mask_threshold`**: The threshold value used for **masking**.
+*   **`sdf_scaling_value`**: The value applied for **SDF scaling**.
+*   **`unique_random_direction`**: Boolean; determines if a **random direction** is assigned to each voxel.
+
+### ⚙️ Training
+*   **`use_pre_train_model`**: Toggle to use a **pretrained model**.
+*   **`pre_train_model_name`**: The name or path of the **pretrained model** to load.
+
+### 🧪 Evaluation
+*   **`only_eval`**: Set to true if you only want to **run evaluation** (e.g., if training completed but evaluation failed).
+*   **`run_eval`**: Determines whether to **run evaluation** at the end of a session.
+*   **`normalize`**: The specific **normalization method** used for evaluation.
+
 ## Implementation
 
 Please consider this config file: config_66_21102025_1200.yaml
@@ -55,25 +75,5 @@ Now you can play with the parameters and run different experiements.
 
 if you want to change model, can be done in main.py file.
 
-## Config File (key variable)
-logging: if you want to log to wandb
 
-
-data:
-
-  dataset_grids: &dataset_grids : `load specific grid data` \
-  mask_threshold: &mask_threshold : `masking`\
-  sdf_scaling_value: &sdf_scaling_value `scaling`\
-  unique_random_direction: &unique_random_direction `is random direction each voxel`\
-  
-training:
-
-  use_pre_train_model: `do want to use pretrained model`\
-  pre_train_model_name: `pretrained model`\
-  
-eval:
-
-  only_eval: &only_eval `only wanted to run evaluation, used when training completed but eval failed`\
-  run_eval: &run_eval `do you wnat to run evaluation`\
-  normalize: &eval_normalize `normalization method`\
   
