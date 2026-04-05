@@ -13,15 +13,10 @@ sys.path.append('../config')
 import read_config
 # src packages
 from eval import ABC_eval
-from models import unet
-from models import model as simpleModels
 from models import unet as unetModels
-from models import encoder_decoder as edModels
-# from training import model_training_v2 as model_training
 from training import model_training_v4 as model_training
 from logger import wandb_logging
 from data_loader import ABC_dataset_loader
-from utils import fvdb_utils as fu
 from utils import ssu_tools as st 
 
 import torch
@@ -120,14 +115,9 @@ def main(config_file):
             t_pos = 0 #6
             s_pos = 0 #6
             
-            # model = unetModels.FVDBUNetBase(
-            #     in_channels=in_channels + vector_dim + t_dim + t_pos + s_pos + extra_dim,
-            #     out_channels=out_channels)
-
-            # model = simpleModels.CNN_vanilla_without_transpose(in_channels=in_channels + vector_dim + t_dim + t_pos + s_pos + extra_dim, 
-            #                                                    features=256, out_channels=out_channels)
-
-            model = edModels.EncoderDecoder(256,5)
+            model = unetModels.FVDBUNetBase(
+                in_channels=in_channels + vector_dim + t_dim + t_pos + s_pos + extra_dim,
+                out_channels=out_channels)
 
         trainable_params = st.print_model_summary(model)
         logger.update_config('model_parameters', trainable_params)
@@ -148,16 +138,6 @@ def main(config_file):
             cosine = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=(config['training']['epochs']-1)*201, eta_min=1e-5)
 
             scheduler = torch.optim.lr_scheduler.SequentialLR(optimizer, schedulers=[warmup, cosine], milestones=[201])
-            # scheduler = torch.optim.lr_scheduler.CyclicLR(
-            #                             optimizer,
-            #                             base_lr=1e-5,
-            #                             max_lr=config['training']['lr'],
-            #                             step_size_up=len(train_dataloader) * 3,  # ~3 epochs warm ramp
-            #                             mode='triangular2',
-            #                             cycle_momentum=True,     # ties momentum to LR
-            #                             base_momentum=0.85,
-            #                             max_momentum=0.95,
-            #                         )
         else:
             scheduler = None
 

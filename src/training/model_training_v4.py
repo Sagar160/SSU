@@ -14,19 +14,6 @@ sys.path.append('../src/utils')
 from ssu_tools import positional_encoding
 import mesh_tools as mt
 
-parent_path = os.path.abspath(os.path.join(__file__, "../../../flow_matching"))
-# print(f"Parent path: {parent_path}")
-sys.path.append(parent_path)
-from flow_matching.path.scheduler import CondOTScheduler
-from flow_matching.path import AffineProbPath
-# from flow_matching.solver import Solver, ODESolver
-from flow_matching.utils import ModelWrapper
-from flow_matching.path import MixtureDiscreteProbPath
-from flow_matching.path.scheduler import PolynomialConvexScheduler
-from flow_matching.solver import MixtureDiscreteEulerSolver
-from flow_matching.utils import ModelWrapper
-from flow_matching.loss import MixturePathGeneralizedKL
-
 class ModelTrainer:
     def __init__(self,
                  model_name, 
