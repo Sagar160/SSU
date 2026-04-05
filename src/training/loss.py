@@ -63,12 +63,12 @@ class LossFunctions:
         return l2 + sign_weight * sign_loss
     
     @staticmethod
-    def custom_loss(prediction, target, cost=None, is_val=True):
+    def custom_loss(prediction, target, is_val=True):
+        # if no val is not provided, use MSE loss by default
         if is_val:
             return F.mse_loss(prediction, target)
         
         # MSE Loss
-        # mse_loss = F.mse_loss(prediction, target)
         loss = LossFunctions.mse_sign_loss(prediction, target)
 
         return loss
