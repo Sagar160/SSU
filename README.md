@@ -63,6 +63,15 @@ cd ../..
 *   **`run_eval`**: Determines whether to **run evaluation** at the end of a session.
 *   **`normalize`**: The specific **normalization method** used for evaluation.
 
+## Model Architecture
+
+We experimented with two model families implemented with FVDB:
+
+1. A U-Net-inspired architecture for hierarchical feature extraction and multi-scale reconstruction.
+2. An encoder-decoder architecture based on the method described in the referenced paper.
+
+Both models are designed for sparse signed distance field super-resolution and can be selected through the run/main.py file.
+
 ## Implementation
 
 Please consider this config file: config_test.yaml
