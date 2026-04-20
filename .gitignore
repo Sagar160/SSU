@@ -144,7 +144,7 @@ dmypy.json
 result_*
 *.sdf
 *.pdf
-*.pth
+# *.pth
 
 # avoid wandb logs
 wandb/
