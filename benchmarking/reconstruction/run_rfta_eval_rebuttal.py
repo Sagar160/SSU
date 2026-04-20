@@ -22,16 +22,15 @@ def NDCnormalize(vertices, return_scale=False):
         return nverts, mean, scale
     return nverts
 
-def run_eval(filename, filename_obj, input_dir, gt_dir):
+def run_eval(filename, filename_obj, input_dir, gt_dir, a):
     # load pred mesh
     input_path = os.path.join(input_dir, filename)
     pred_mesh = trimesh.load(input_path, force='mesh')
     v = pred_mesh.vertices
     f = pred_mesh.faces
-    v = NDCnormalize(v, return_scale=False)
-    v = v+0.5
+    # v = NDCnormalize(v, return_scale=False)
+    # v = v+0.5
     # print(v.min(), v.max())
-    pred_mesh = trimesh.Trimesh(vertices=v, faces=f)
 
     # load gt mesh
     gt_obj_name = filename_obj + '.obj'
@@ -39,11 +38,16 @@ def run_eval(filename, filename_obj, input_dir, gt_dir):
     gt_mesh = trimesh.load(gt_obj_path, force='mesh')
     gt_v = gt_mesh.vertices
     gt_f = gt_mesh.faces
-    gt_v = NDCnormalize(gt_v, return_scale=False)
-    gt_v = gt_v*2
+    # gt_v = NDCnormalize(gt_v, return_scale=False)
+    # gt_v = gt_v*2
     # print(gt_v.min(), gt_v.max())
     gt_mesh = trimesh.Trimesh(vertices=gt_v, faces=gt_f)
     # print(gt_mesh.vertices.min(), gt_mesh.vertices.max())
+
+    v = v*((gt_v.max() - gt_v.min())/2)*(0.25/a)
+    v = v/0.5
+    v = v+0.5
+    pred_mesh = trimesh.Trimesh(vertices=v, faces=f)
 
     data = (filename_obj, gt_mesh, pred_mesh)
     result = get_cd_f1_nc(data, scale_gt=1.0, eval_normalization=None)
@@ -67,7 +71,7 @@ if __name__ == "__main__":
             filenames_obj = [f for f in water_filenames]
             
             out = joblib.Parallel(n_jobs=-1)(
-                    joblib.delayed(run_eval)(file, file_obj, input_dir, gt_dir)for file, file_obj in zip(filenames, filenames_obj)
+                    joblib.delayed(run_eval)(file, file_obj, input_dir, gt_dir, a)for file, file_obj in zip(filenames, filenames_obj)
                 )
 
             print(f'number of samples for size: {size}, method: rfta:', len(out))
