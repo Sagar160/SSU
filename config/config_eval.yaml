@@ -12,7 +12,7 @@ model:
   save_model_path: '/data/workspaces/spanwar/results/ssu/save_models/83_encoder_decoder_exp_v2_256_5.pth'
 
 prediction:
-  prediction_folder_name: '85_eval_thingi32' # folder name to save predictions
+  prediction_folder_name: 'test_eval_thingi32' # folder name to save predictions
   save_predictions_dir: '/data/workspaces/spanwar/results/ssu/test_predictions'
 
 eval:

@@ -50,7 +50,7 @@ def clear_gpu_memory():
 def main(config_file):
     clear_gpu_memory()
 
-    with open('/user/spanwar/home/Documents/learn-fvdb/ssu/SSU/run/thingi30.txt', 'r') as f:
+    with open('thingi30.txt', 'r') as f:
         file_names = f.read().splitlines()
 
     config = read_config.read_yaml_config(f'{config_file}')
