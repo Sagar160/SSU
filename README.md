@@ -67,7 +67,7 @@ cd ../..
 
 We experimented with a U-Net-inspired architecture for hierarchical feature extraction and multi-scale reconstruction.
 
-Both models are designed for sparse signed distance field super-resolution and can be selected through the run/main.py file.
+Model is designed for sparse signed distance field super-resolution and can be selected through the run/main.py file.
 
 ## Implementation
 
@@ -83,7 +83,7 @@ if you want to change model, can be done in main.py file.
 
 ## Benchmarking
 
-Our benchmarking methodology is directly inspired by [PoNQ](https://github.com). We employ a nearly identical evaluation framework to ensure consistency and comparability in our results.
+Our benchmarking methodology is directly inspired by [PoNQ](https://github.com/nissmar/PoNQ/tree/main/src/eval). We employ a nearly identical evaluation framework to ensure consistency and comparability in our results.
 
 ## 🚀 Demo
 
