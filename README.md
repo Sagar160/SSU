@@ -81,6 +81,10 @@ Now you can play with the parameters and run different experiements.
 
 if you want to change model, can be done in main.py file.
 
+## Benchmarking
+
+Our benchmarking methodology is directly inspired by [PoNQ](https://github.com). We employ a nearly identical evaluation framework to ensure consistency and comparability in our results.
+
 ## 🚀 Demo
 
 For a hands-on experience, please refer to the **demo notebook** located at `demo/demo.ipynb`. You can load the **trained model** directly to test results and run inference on your own data.
