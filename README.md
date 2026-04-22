@@ -1,4 +1,5 @@
 # SuperSDF: Learning-based Sparse Signed Distance Field Super-Resolution
+[Sagar Panwar](https://orcid.org/0009-0001-4905-5905)<sup>\*</sup>, [Nissim Maruani](https://nissmar.github.io)<sup>\*</sup>, [Céline Loscos](https://scholar.google.com/citations?user=_NAVH9UAAAAJ&hl=en), [Mathieu Desbrun](https://pages.saclay.inria.fr/mathieu.desbrun/),[Pierre Alliez](https://team.inria.fr/titane/pierre-alliez/)
 
 SuperSDF is a learning-based method for signed distance field super-resolution that reconstructs high-fidelity meshes from coarse inputs, without mesh supervision or auxiliary surface representations. Using a sparse voxel network near the surface, our approach learns how to directly refine the input SDF, outperforming prior methods in quality, efficiency, and scalability.
 
@@ -6,25 +7,6 @@ SuperSDF is a learning-based method for signed distance field super-resolution t
   <img src="media/paper_summary.jpg" width="80%">
 </p>
 
-## Downloading data
-
-```shell
-mkdir data 
-cd data
-pip install gdown
-gdown 1YyYOgn8uxGH6Nz_gGk8OR7IuLKUF89Ze
-```
-
-untar 
-```shell
-pip install py7zr
-py7zr x groundtruth.7z 
-```
-
-Remove unecessary file
-```shell
-rm groundtruth.7z 
-```
 
 ## Getting Started
 
@@ -49,6 +31,10 @@ pip install .
 cd ../..
 ```
 
+## Demo 🚀
+
+For a hands-on experience, please refer to the **demo notebook** located at [demo/demo.ipynb](demo/demo.ipynb). You can load the **trained model** directly to test results and run inference on your own data.
+
 ## Implementation
 
 Please consider this config file: config_test.yaml
@@ -61,6 +47,27 @@ Now you can play with the parameters and run different experiements.
 
 if you want to change model, can be done in main.py file.
 
+
+## Downloading data
+
+```shell
+mkdir data 
+cd data
+pip install gdown
+gdown 1YyYOgn8uxGH6Nz_gGk8OR7IuLKUF89Ze
+```
+
+untar 
+```shell
+pip install py7zr
+py7zr x groundtruth.7z 
+```
+
+Remove unecessary file
+```shell
+rm groundtruth.7z 
+```
+
 ## Benchmarking
 
 Our benchmarking methodology is directly inspired by [PoNQ](https://github.com/nissmar/PoNQ/tree/main/src/eval). We employ a nearly identical evaluation framework to ensure consistency and comparability in our results.
@@ -69,10 +76,6 @@ Our benchmarking methodology is directly inspired by [PoNQ](https://github.com/n
 cd ssu/benchmarking
 python get_prediction.py --config config_eval.yaml
 ```
-
-## 🚀 Demo
-
-For a hands-on experience, please refer to the **demo notebook** located at `demo/demo.ipynb`. You can load the **trained model** directly to test results and run inference on your own data.
 
 # Configuration File Overview
 
