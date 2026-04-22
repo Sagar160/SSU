@@ -31,7 +31,7 @@ rm groundtruth.7z
 1. Start by cloning the repository and *fVDB* submodule:
 
 ```shell
-git clone --recursive https://github.com/Sagar160/SSU/tree/sp-core-implementation
+git clone --recursive https://github.com/Sagar160/SSU.git
 ```
 
 2. Create the `ssu` conda environment (tested with CUDA 12.1):
@@ -48,30 +48,6 @@ export MAX_JOBS=$(free -g | awk "/^Mem:/{jobs=int($4/2.5); if(jobs<1) jobs=1; pr
 pip install .
 cd ../..
 ```
-
-# Configuration File Overview
-
-### 📊 Logging
-*   **`logging`**: Enable or disable logging to **Weights & Biases (WandB)**.
-
-### 📁 Data
-*   **`dataset_grids`**: Specific grid data to be loaded.
-*   **`mask_threshold`**: The threshold value used for **masking**.
-*   **`sdf_scaling_value`**: The value applied for **SDF scaling**.
-*   **`unique_random_direction`**: Boolean; determines if a **random direction** is assigned to each voxel.
-
-### ⚙️ Training
-*   **`use_pre_train_model`**: Toggle to use a **pretrained model**.
-*   **`pre_train_model_name`**: The name or path of the **pretrained model** to load.
-
-### 🧪 Evaluation
-*   **`only_eval`**: Set to true if you only want to **run evaluation** (e.g., if training completed but evaluation failed).
-*   **`run_eval`**: Determines whether to **run evaluation** at the end of a session.
-*   **`normalize`**: The specific **normalization method** used for evaluation.
-
-## Model Architecture
-
-We experimented with a U-Net-inspired architecture for hierarchical feature extraction and multi-scale reconstruction.
 
 ## Implementation
 
@@ -97,6 +73,30 @@ python get_prediction.py --config config_eval.yaml
 ## 🚀 Demo
 
 For a hands-on experience, please refer to the **demo notebook** located at `demo/demo.ipynb`. You can load the **trained model** directly to test results and run inference on your own data.
+
+# Configuration File Overview
+
+### 📊 Logging
+*   **`logging`**: Enable or disable logging to **Weights & Biases (WandB)**.
+
+### 📁 Data
+*   **`dataset_grids`**: Specific grid data to be loaded.
+*   **`mask_threshold`**: The threshold value used for **masking**.
+*   **`sdf_scaling_value`**: The value applied for **SDF scaling**.
+*   **`unique_random_direction`**: Boolean; determines if a **random direction** is assigned to each voxel.
+
+### ⚙️ Training
+*   **`use_pre_train_model`**: Toggle to use a **pretrained model**.
+*   **`pre_train_model_name`**: The name or path of the **pretrained model** to load.
+
+### 🧪 Evaluation
+*   **`only_eval`**: Set to true if you only want to **run evaluation** (e.g., if training completed but evaluation failed).
+*   **`run_eval`**: Determines whether to **run evaluation** at the end of a session.
+*   **`normalize`**: The specific **normalization method** used for evaluation.
+
+## Model Architecture
+
+We experimented with a U-Net-inspired architecture for hierarchical feature extraction and multi-scale reconstruction.
 
 # 📑 Acknowledgments
 
