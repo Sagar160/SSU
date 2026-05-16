@@ -43,7 +43,9 @@ def run_eval(filename, filename_obj, input_dir, gt_dir, a):
     # print(gt_v.min(), gt_v.max())
     gt_mesh = trimesh.Trimesh(vertices=gt_v, faces=gt_f)
     # print(gt_mesh.vertices.min(), gt_mesh.vertices.max())
-    print('before', v.min(), v.max(), 'at scale:', a)
+    v[:, 0], v[:, 1] = v[:, 1].copy(), v[:, 0].copy()
+    f[:, 0], f[:, 1] = f[:, 1].copy(), f[:, 0].copy()
+    # print('before', v.min(), v.max(), 'at scale:', a)
     v = v*((gt_v.max() - gt_v.min())/2)*(0.25/a)
     v = v/0.5
     v = v+0.5
@@ -64,7 +66,7 @@ if __name__ == "__main__":
     with open('/user/spanwar/home/Documents/learn-fvdb/ssu/SSU/run/thingi30.txt', 'r') as f:
         water_filenames = f.read().splitlines()
 
-    for a in [0.25]:
+    for a in [0.25, 0.5, 0.75]:
         print(f"Evaluating for scale: {a}")
         input_dir = f'/data/workspaces/spanwar/results/ssu/rebuttal/our_vs_rfta/prediction/s_{a}_objects'
         for size in [32, 64, 128]:
