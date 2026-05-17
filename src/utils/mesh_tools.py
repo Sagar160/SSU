@@ -4,6 +4,7 @@ import fvdb.nn as fvnn
 import numpy as np
 import matplotlib.pyplot as plt
 from skimage import measure
+from meshplot import plot
 import ipywidgets
 
 
@@ -89,3 +90,17 @@ def make_mask_close(sdf_input, grid_n):
     # mask = np.abs(sdf_input) < (1/grid_n*np.sqrt(3))
     mask = np.abs(sdf_input) < (3/grid_n)
     return mask
+
+
+# Marching cube in vdb
+def vdb_marching_cubes(out: fvnn.VDBTensor):
+    '''computes marching cubes for a VDBTensor'''
+    nv, nf, _ = out.grid.marching_cubes(out.data)
+    return nv.jdata.cpu().detach().numpy(), nf.jdata.cpu().detach().numpy()
+
+
+# Plot the VDB tensor using marching cube
+def plot_vdb(out: fvnn.VDBTensor):
+    '''plots a VDBTensor using mesh_tools'''
+    nv, nf = vdb_marching_cubes(out)
+    plot(nv, nf)
