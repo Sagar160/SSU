@@ -1,7 +1,7 @@
 # SuperSDF: Learning-based Sparse Signed Distance Field Super-Resolution
 [Sagar Panwar](https://orcid.org/0009-0001-4905-5905)<sup>\*</sup>, [Nissim Maruani](https://nissmar.github.io)<sup>\*</sup>, [Céline Loscos](https://scholar.google.com/citations?user=_NAVH9UAAAAJ&hl=en), [Mathieu Desbrun](https://pages.saclay.inria.fr/mathieu.desbrun/),[Pierre Alliez](https://team.inria.fr/titane/pierre-alliez/)
 
-SuperSDF is a learning-based method for signed distance field super-resolution that reconstructs high-fidelity meshes from coarse inputs, without mesh supervision or auxiliary surface representations. Using a sparse voxel network near the surface, our approach learns how to directly refine the input SDF, outperforming prior methods in quality, efficiency, and scalability.
+SuperSDF is a learning-based method for signed distance field super-resolution that reconstructs high-fidelity meshes from coarse inputs, without mesh supervision or auxiliary surface representations. Using a sparse voxel network near the surface, our approach learns how to directly refine the input SDF, outperforming prior methods in quality, efficiency, and scalability. More details in our [SIGGRAPH 2026 paper](https://pages.saclay.inria.fr/mathieu.desbrun/pubs/PMLDA26.pdf).
 
 <p align="center">
   <img src="media/paper_summary.jpg" width="80%">
